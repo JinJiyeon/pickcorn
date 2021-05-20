@@ -58,7 +58,7 @@ ROOT_URLCONF = 'pickcorn.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'pickcorn' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
