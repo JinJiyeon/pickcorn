@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'movies'
 urlpatterns = [
+    path('<int:pk>/recommend/', views.recommend, name='recommend'),
     # 전체영화정보 제공 => index
     path('', views.index, name='index'),
     # 단일 영화정보 제공 => detail

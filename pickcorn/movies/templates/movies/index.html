@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
   <h1>Movies</h1>
   {% for movie in movies %}
     <h3>{{ movie.title }}</h3>
@@ -20,3 +21,4 @@
   {% endfor %}
   
 {% endblock %}
+

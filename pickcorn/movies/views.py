@@ -1,9 +1,9 @@
+from django.core import serializers
+from .serializers import MovieSerializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
-
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from .models import Movie, Article, Comment
 from .forms import ArticleForm, CommentForm
@@ -18,6 +18,15 @@ from django.http import JsonResponse, HttpResponse
 #                         ArticleListSerializer,
 # )
 # Create your views here.
+
+def recommend(request, pk):
+    movie = get_object_or_404(Movie, id=pk)
+    data = serializers.serialize('json', [movie])
+    context = {
+        'data': data
+    }
+    return render(request, 'movies/recommend.html', context)
+
 @require_GET
 def index(request):
     movies = Movie.objects.all()
@@ -176,3 +185,4 @@ def like(request, article_pk):
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     
+
