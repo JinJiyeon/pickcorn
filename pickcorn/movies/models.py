@@ -5,6 +5,8 @@ from django.conf import settings
 #     id = models.IntegerField(primary_key=True)
 #     name = models.CharField(max_length=30)
 
+# class Genre(models.Model):
+#     name = models.CharField(max_length=50)
 
 class Movie(models.Model):
     # 디폴트인 id 생성하지 않음
@@ -18,7 +20,7 @@ class Movie(models.Model):
     vote_count = models.IntegerField()
     # 좋아요 한 영화
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
-    # genres = models.ManyToManyField(Genres)
+    # genres = models.ManyToManyField(Genre)
 
 
 class Article(models.Model):

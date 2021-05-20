@@ -2,17 +2,23 @@
 
 {% block content %}
 
+  <h1>Movies</h1>
   {% for movie in movies %}
-  <a href="{% url 'movies:detail' movie_pk=movie.pk %}">
-    <p>{{ movie.title }}</p>
-    <p>{{ movie.id }}</p>  
-  </a>
-    
+    <h3>{{ movie.title }}</h3>
+    <p>
+      {% for genre in movie.genres.all %}
+        <span>{{ genre.name }}</span>
+      {% endfor %}
+    </p>
+    {% if movie.overview %}
+      <p>{{ movie.overview|truncatechars:60 }}</p>
+    {% else %}
+      <img src="{{ movie.poster_path }}" class="img-thumbnail" alt="">
+    {% endif %}
+    <br>
+    <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+    <hr>
   {% endfor %}
-
-
-{% endblock content %}
-
-
-
+  
+{% endblock %}
 
