@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ movie.title }}</h1>
+  <p>
+    {% for genre in movie.genres.all %}
+    <span>{{ genre.name }}</span>
+    {% endfor %}
+  </p>
+  <p>vote count : {{ movie.vote_count }}</p>
+  <p>vote average : {{ movie.vote_average }}</p>
+  <p>overview : {{ movie.overview }}</p>
+  <img src="{{ movie.poster_path }}" class="img-fluid" alt="No Photos Yet" >
+
+  <hr>
+  <p>Ongoing Reviews </p>
+  {% if articles|length %}
+    <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
+  {% endif %}
+  {% for article in articles %}
+    <div>
+      {{ article.user }} - {{ article.content }}
+    </div>
+  {% empty %}
+    <p><b>리뷰가 없어요..</b></p>
+  {% endfor %}
+
+  <hr>
+  {% if request.user.is_authenticated %}
+    <form action="{% url 'community:article_create' movie.pk %}" method="POST">
+      {% csrf_token %}
+      {{ article_form }}
+      <input type="submit">
+    </form>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
+  {% endif %}
+
+{% endblock %}
