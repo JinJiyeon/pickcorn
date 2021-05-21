@@ -17,7 +17,7 @@
           {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
           <p class="card-text">TMDB 평점 : {{ movie.vote_average }} ({{ movie.vote_count }} votes)</p>
 
-          <p>pickcorn 지수: {{ movie.rated_good_users.count }} / ({{ movie.rated_good_users.count }} + {{ movie.rated_bad_users.count }}) * 100</p>
+          <p>pickcorn Score: {{ movie.rated_good_users.count }} / ({{ movie.rated_good_users.count }} + {{ movie.rated_bad_users.count }}) * 100</p>
           
           <p class="card-text">overview : {{ movie.overview }}</p>
           {% comment %} good or bad {% endcomment %}
