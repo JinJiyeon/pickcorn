@@ -40,11 +40,11 @@ def index(request):
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     articles = movie.article_set.all()
-    article_form = ArticleForm(request.POST)
+    
     context = {
         'movie': movie,
         'articles': articles,
-        'article_form': article_form,
+        
     }
     return render(request, 'movies/detail.html', context)
 
@@ -59,11 +59,33 @@ def article_create(request, movie_pk):
             article.user = request.user
             article.movie = movie
             article.save()
-            return redirect('movies:detail', article.pk)
+            return redirect('movies:detail', movie.pk)
     else:
         form = ArticleForm()
     context = {
         'form': form,
+        'movie': movie,
+    }
+    return render(request, 'movies/article_create.html', context)
+
+
+def article_update(request, article_pk):
+    article = get_object_or_404(Article, pk=article_pk)
+    movie = get_object_or_404(Movie, pk=article.movie_id)
+    
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.user = request.user
+            article.movie = movie
+            article.save()
+            return redirect('movies:detail', movie.pk)
+    else:
+        form = ArticleForm(instance = article)
+    context = {
+        'form': form,
+        'movie': movie,
     }
     return render(request, 'movies/article_create.html', context)
 
@@ -71,12 +93,14 @@ def article_create(request, movie_pk):
 @require_GET
 def article_detail(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
+    movie = get_object_or_404(Movie, pk=article.movie_id)
     comments = article.comment_set.all()
     comment_form = CommentForm()
     context = {
         'article': article,
         'comment_form': comment_form,
         'comments': comments,
+        'movie': movie,
     }
     return render(request, 'movies/article_detail.html', context)
 
@@ -90,7 +114,7 @@ def create_comment(request, article_pk):
         comment.article = article
         comment.user = request.user
         comment.save()
-        return redirect('movies:detail', article.pk)
+        return redirect('movies:article_detail', article.pk)
     context = {
         'comment_form': comment_form,
         'article': article,
@@ -100,25 +124,26 @@ def create_comment(request, article_pk):
 
 
 @require_POST
-def like(request, article_pk):
+def like(request, movie_pk):
     if request.user.is_authenticated:
-        article = get_object_or_404(Article, pk=article_pk)
+        movie = get_object_or_404(Movie, pk=movie_pk)
         user = request.user
 
-        if article.like_users.filter(pk=user.pk).exists():
-            article.like_users.remove(user)
+        if movie.like_users.filter(pk=user.pk).exists():
+            movie.like_users.remove(user)
             liked=False
         else:
-            article.like_users.add(user)
+            movie.like_users.add(user)
             liked=True
 
         response_data = {
             'liked': liked,
-            'count': article.like_users.count()
+            'count': movie.like_users.count()
         }
         
-        return JsonResponse(response_data)
-    return HttpResponse(status=401)
+        return redirect('movies:detail', movie.pk)
+    return redirect('accounts:login')
+
 
 
 
