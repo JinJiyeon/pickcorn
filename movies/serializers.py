@@ -40,3 +40,10 @@ class CommentListSerializer(serializers.ModelSerializer):
         model = Comment
         fields = '__all__'
 
+
+class RecommendSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Movie
+        fields = ('id','title','poster_path','genres')
+
