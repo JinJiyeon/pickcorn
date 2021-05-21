@@ -1,10 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>로그인</h1>
-<form action="" method="POST">
+{% comment %} <img class="img-main" src="#" alt="" width="72" height="57"> {% endcomment %}
+<h1 class="text-center text-light">🥤 로그인 🥤</h1>
+<form class="form-login" method="post" action="/accounts/login/">
   {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit">
+    <h1 class="h3 mb-3 fw-normal text-light">Please Log in</h1>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="username" placeholder="아이디" name="username" value="{{ form.username.value|default_if_none:'' }}">
+      <label for="username">아이디</label>
+      {{ form.username.errors }}
+    </div>
+
+    <div class="form-floating">
+      <input type="password" class="form-control" id="password" placeholder="비밀번호" name="password" value="{{ form.password1.value|default_if_none:'' }}">
+      <label for="password">비밀번호</label>
+      {{ form.password.errors }}
+    </div>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+    <p class="mt-5 mb-3 text-muted">&copy; PICKCORN :D</p>
 </form>
+
 {% endblock  %}

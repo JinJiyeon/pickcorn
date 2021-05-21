@@ -1,0 +1,16 @@
+.header {
+  height: 75px;
+  padding: 1rem;
+  color: white;
+  background: rgb(100, 95, 92);
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  bottom: 20px;
+  /* width: 100% */
+  left: 0;
+  right: 0;
+}

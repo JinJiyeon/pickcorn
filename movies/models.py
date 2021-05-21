@@ -25,7 +25,8 @@ class Movie(models.Model):
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
     weighted_vote = models.FloatField()
     recommends = models.ManyToManyField('self', symmetrical=False)
-
+    rated_good_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_good_movies')
+    rated_bad_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_bad_movies')
 
 
 class Article(models.Model):

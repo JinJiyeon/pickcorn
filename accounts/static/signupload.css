@@ -1,0 +1,18 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #000000;
+}
+
+.main-btn {
+  margin-top: 5px;
+  background-color: #fd890d;
+  border-color: #fd890d;
+}

@@ -33,19 +33,88 @@
     {% endfor %}
   </div>
 
-  <hr>
-  <p>Ongoing Reviews </p>
-  {% if articles|length %}
-    <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
-  {% endif %}
-  {% for article in articles %}
-    <div>
-      {{ article.user }} - {{ article.title }}
-      <a href="{% url 'movies:article_detail' article.pk %}">Detail</a>
+  <div class="row">
+    <div class="col-sm-5">
+      <div class="card" style="#">
+        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="...">
+        <div class="card-body">
+        </div>
+      </div>
     </div>
-  {% empty %}
-    <p><b>리뷰가 없어요..</b></p>
-  {% endfor %}
+    <div class="col-sm-7">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="text-center card-title">{{ movie.title }}</h1>
+          {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
+          <p class="card-text">TMDB 평점 : {{ movie.vote_average }} ({{ movie.vote_count }} votes)</p>
+
+          <p>pickcorn 지수: {{ movie.rated_good_users.count }} / ({{ movie.rated_good_users.count }} + {{ movie.rated_bad_users.count }}) * 100</p>
+          
+          <p class="card-text">overview : {{ movie.overview }}</p>
+          {% comment %} good or bad {% endcomment %}
+          <div class="btn-group" role="group">
+            <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
+              {% csrf_token %}
+              {% if request.user in movie.rated_good_users.all %}
+                <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-thumbs-up"></i></span></button>
+              {% else %}
+                <button class="btn btn-outline-primary"><i class="far fa-thumbs-up"></i></button>
+              {% endif %}
+            </form> 
+
+            <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
+              {% csrf_token %}
+              {% if request.user in movie.rated_bad_users.all %}
+                <button class="btn btn-outline-primary"><i class="fas fa-thumbs-down"></i></span></button>
+              {% else %}
+                <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
+              {% endif %}
+            </form> 
+
+            {% comment %} (찜) 버튼 {% endcomment %}
+
+            <form action="{% url 'movies:like' movie.id %}" method="POST">
+              {% csrf_token %}
+              {% if request.user in movie.like_users.all %}
+                <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-heart heart"></i></span></button>
+              {% else %}
+                <button class="btn btn-outline-primary"><i class="far fa-heart heart"></i></button>
+              {% endif %}
+            </form>
+          </div>
+          
+          <br>
+          <br>
+
+          <h4>Ongoing Reviews </h4>
+          {% if articles|length %}
+            <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
+          {% endif %}
+          {% for article in articles %}
+            <div>
+              {{ article.user }} - {{ article.title }}
+              <a href="{% url 'movies:article_detail' article.pk %}">[Detail]</a>
+            </div>
+          {% empty %}
+            <p><b>리뷰가 없어요..</b></p>
+          {% endfor %}
+
+          <hr>
+
+          {% if request.user.is_authenticated %}
+            리뷰 작성하기
+            <a href="{% url 'movies:article_create' movie.id %}">✏</a>
+          {% else %}
+            <a href="{% url 'accounts:login' %}">리뷰를 작성하려면 로그인하세요.</a>
+          {% endif %}
+
+          <hr>
+
+          <a href="{% url 'movies:index' %}" class="btn btn-primary">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <hr>
 
