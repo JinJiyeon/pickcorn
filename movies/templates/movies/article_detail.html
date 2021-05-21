@@ -13,6 +13,7 @@
 
   {% if request.user == article.user  %}
     <a href="{% url 'movies:article_update' article.pk %}">수정하기</a>
+    <a href="{% url 'movies:article_delete' article.pk %}">삭제하기</a>
   {% endif %}
 
   <hr>
@@ -24,6 +25,10 @@
     <div>
       {{ comment.user }} - {{ comment.content }}
       ({{ comment.created_at|date:'Y-m-d H:i' }})
+      {% if request.user == comment.user  %}
+        {% comment %} <a href="{% url 'movies:update_comment' comment.pk %}">수정</a> {% endcomment %}
+        <a href="{% url 'movies:delete_comment' comment.pk %}">삭제</a>
+      {% endif %}
     </div>
   {% empty %}
     <p><b>댓글이 없어요..</b></p>
