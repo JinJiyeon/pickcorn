@@ -16,23 +16,19 @@ body {
   align-items: center;
 } */
 
-.form-signin {
+.form-login {
   width: 100%;
   max-width: 450px;
   padding: 15px;
   margin: auto;
 }
 
-.form-signin .form-floating:focus-within {
+.form-login .form-floating:focus-within {
   z-index: 2;
 }
 
-.form-signin button[type="submit"] {
+.form-login button[type="submit"] {
   margin-top: 5px;
   background-color: #fd890d;
   border-color: #fd890d;
-}
-
-.text-light{
-  color: aliceblue;
 }
