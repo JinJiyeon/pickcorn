@@ -20,7 +20,18 @@
   <p>vote count : {{ movie.vote_count }}</p>
   <p>vote average : {{ movie.vote_average }}</p>
   <p>overview : {{ movie.overview }}</p>
-  <img src="{{ movie.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" >
+  <img src="https://image.tmdb.org/t/p/w500/{{ movie.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" >
+  <hr>
+  <div>
+  <h3>추천 영화</h3>
+  <p>{{ message }}</p>
+    {% for recom in movie.recommends.all %}
+      <a href="{% url 'movies:detail' recom.pk %}">
+        <p>{{ recom.title }}</p>
+        <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" width="180">     
+      </a>    
+    {% endfor %}
+  </div>
 
   <hr>
   <p>Ongoing Reviews </p>
@@ -44,5 +55,4 @@
   {% else %}
     <a href="{% url 'accounts:login' %}">리뷰를 작성하려면 로그인하세요.</a>
   {% endif %}
-
 {% endblock %}
