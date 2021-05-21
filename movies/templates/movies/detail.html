@@ -1,38 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>{{ movie.title }}</h1>
-  <p>
-    {% for genre in movie.genres.all %}
-    <span>{{ genre.name }}</span>
-    {% endfor %}
-  </p>
-  {% comment %} 좋아요 버튼 {% endcomment %}
-  <form action="{% url 'movies:like' movie.pk %}" method="POST">
-    {% csrf_token %}
-    {% if request.user in movie.like_users.all %}
-      <button class="like-btn"><span style="color: Tomato;"><i class="fas fa-heart heart"></i></span></button>
-    {% else %}
-      <button class="like-btn"><i class="far fa-heart heart"></i></button>
-    {% endif %}
-  </form>
-
-  <p>vote count : {{ movie.vote_count }}</p>
-  <p>vote average : {{ movie.vote_average }}</p>
-  <p>overview : {{ movie.overview }}</p>
-  <img src="https://image.tmdb.org/t/p/w500/{{ movie.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" >
-  <hr>
-  <div>
-  <h3>추천 영화</h3>
-  <p>{{ message }}</p>
-    {% for recom in movie.recommends.all %}
-      <a href="{% url 'movies:detail' recom.pk %}">
-        <p>{{ recom.title }}</p>
-        <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" width="180">     
-      </a>    
-    {% endfor %}
-  </div>
-
+  
   <div class="row">
     <div class="col-sm-5">
       <div class="card" style="#">
@@ -118,10 +87,19 @@
 
   <hr>
 
-  {% if request.user.is_authenticated %}
-    리뷰 작성하기
-    <a href="{% url 'movies:article_create' movie.pk %}">✏</a>
-  {% else %}
-    <a href="{% url 'accounts:login' %}">리뷰를 작성하려면 로그인하세요.</a>
-  {% endif %}
+  <h3>추천 영화</h3>
+  <div class="row">
+    <p>{{ message }}</p>
+    {% for recom in movie.recommends.all %}
+      <div class="col-sm-4">
+        <a href="{% url 'movies:detail' recom.pk %}">
+          <p>{{ recom.title }}</p>
+          <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" width="auto">     
+        </a>
+      </div>    
+    {% endfor %}
+  </div>
+
+  <hr>
+
 {% endblock %}
