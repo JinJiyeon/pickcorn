@@ -5,12 +5,14 @@ from .models import Article, Comment
 class ArticleForm(forms.ModelForm):
 
     class Meta:
-        mode = Article
-        fields = '__all__'
+        model = Article
+        # fields = '__all__'
+        exclude = ['user', 'movie', ]
 
 class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['user', 'article', ]
 

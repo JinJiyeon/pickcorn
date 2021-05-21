@@ -16,7 +16,9 @@ urlpatterns = [
     # path('comments/<int:pk>/', views.comment_detail),
     # path('articles/<int:article_pk>/comments/', views.article_comments),
     path('<int:movie_pk>/article/', views.article_create, name='article_create'),
-    path('<int:article_pk>/', views.article_detail, name='detail'),
+    path('article/<int:article_pk>/', views.article_detail, name='article_detail'),
+    path('article/<int:article_pk>/update', views.article_update, name='article_update'),
+
     path('<int:article_pk>/comments/', views.create_comment, name='create_comment'),
-    path('<int:article_pk>/like/', views.like, name='like'),
+    path('<int:movie_pk>/like/', views.like, name='like'),
 ]

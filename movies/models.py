@@ -35,5 +35,5 @@ class Article(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
