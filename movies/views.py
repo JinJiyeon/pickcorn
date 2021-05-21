@@ -8,6 +8,7 @@ from django.shortcuts import render, get_list_or_404, get_object_or_404, redirec
 from .models import Movie, Article, Comment
 from .forms import ArticleForm, CommentForm
 from django.http import JsonResponse, HttpResponse
+from django.contrib import messages
 
 # , Comment, Article
 # from .serializers import (MovieSerializer, 
@@ -72,22 +73,32 @@ def article_create(request, movie_pk):
 def article_update(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     movie = get_object_or_404(Movie, pk=article.movie_id)
-    
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=article)
-        if form.is_valid():
-            article = form.save(commit=False)
-            article.user = request.user
-            article.movie = movie
-            article.save()
-            return redirect('movies:detail', movie.pk)
-    else:
-        form = ArticleForm(instance = article)
-    context = {
-        'form': form,
-        'movie': movie,
-    }
-    return render(request, 'movies/article_create.html', context)
+    if request.user == article.user:
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, instance=article)
+            if form.is_valid():
+                article = form.save(commit=False)
+                article.user = request.user
+                article.movie = movie
+                article.save()
+                return redirect('movies:article_detail', article.pk)
+        else:
+            form = ArticleForm(instance = article)
+        context = {
+            'form': form,
+            'movie': movie,
+        }
+        return render(request, 'movies/article_update.html', context)
+
+    return redirect('movies:detail', movie.pk)
+
+
+def article_delete(request, article_pk):
+    article = get_object_or_404(Article, pk=article_pk)
+    movie = get_object_or_404(Movie, pk=article.movie_id)
+    if request.user == article.user:
+        article.delete()
+    return redirect('movies:detail', movie.pk)
 
 
 @require_GET
@@ -123,6 +134,14 @@ def create_comment(request, article_pk):
     return render(request, 'movies/detail.html', context)
 
 
+def delete_comment(request, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    article = get_object_or_404(Article, pk=comment.article_id)
+    if request.user == comment.user:
+        comment.delete()
+    
+    return redirect('movies:article_detail', article.pk)
+
 @require_POST
 def like(request, movie_pk):
     if request.user.is_authenticated:
@@ -145,7 +164,52 @@ def like(request, movie_pk):
     return redirect('accounts:login')
 
 
+def rate_good(request, movie_pk):
+    if request.user.is_authenticated:
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        user = request.user
 
+        if movie.rated_good_users.filter(pk=user.pk).exists():
+            movie.rated_good_users.remove(user)
+            rated_good=False
+        else:
+            movie.rated_good_users.add(user)
+            rated_good=True
+            if movie.rated_bad_users.filter(pk=user.pk).exists():
+                movie.rated_bad_users.remove(user)
+                rated_bad=False
+
+        response_data = {
+            'rated_good': rated_good,
+            'rated_good_count': movie.rated_good_users.count()
+        }
+        
+        return redirect('movies:detail', movie.pk)
+    return redirect('accounts:login')
+
+def rate_bad(request, movie_pk):
+    if request.user.is_authenticated:
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        user = request.user
+
+        if movie.rated_bad_users.filter(pk=user.pk).exists():
+            movie.rated_bad_users.remove(user)
+            rated_bad=False
+        else:
+            movie.rated_bad_users.add(user)
+            rated_bad=True
+            if movie.rated_good_users.filter(pk=user.pk).exists():
+                movie.rated_good_users.remove(user)
+                rated_good=False
+
+        response_data = {
+            'rated_bad': rated_bad,
+            'rated_bad_count': movie.rated_bad_users.count()
+        }
+        
+        return redirect('movies:detail', movie.pk)
+
+    return redirect('accounts:login')
 
 # @api_view(['GET','POST'])
 # def movie_articles(request, movie_pk):

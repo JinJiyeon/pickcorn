@@ -23,7 +23,8 @@ class Movie(models.Model):
     vote_count = models.IntegerField()
     # 좋아요 한 영화
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
-
+    rated_good_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_good_movies')
+    rated_bad_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_bad_movies')
 
 
 class Article(models.Model):
