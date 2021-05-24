@@ -3,22 +3,70 @@
 {% block content %}
 
   <h1>Movies</h1>
-  {% for movie in movies %}
-    <h3>{{ movie.title }}</h3>
-    <p>
-      {% for genre in movie.genres.all %}
-        <span>{{ genre.name }}</span>
+
+  <h2 class="mb-3">Top Rated</h2>
+  <div class="container">
+    <div class="row g-4">
+      {% for movie in weighted_vote_movies %}
+        <div class="col">
+          <div class="card">
+            <a href="{% url 'movies:detail' movie.pk %}">
+              <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+            </a>
+            <div class="card-body">
+              <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
+              <p class="card-text">평점 순 : {{ movie.weighted_vote }}</p>
+              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+            </div>
+          </div>
+        </div>
       {% endfor %}
-    </p>
-    {% if movie.overview %}
-      <p>{{ movie.overview|truncatechars:60 }}</p>
-    {% else %}
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="img-fluid" alt="">
-    {% endif %}
-    <br>
-    <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
-    <hr>
-  {% endfor %}
+    </div>
+  </div>
+  <hr>
+
+  <h2 class="mb-3">Most voted</h2>
+  <div class="container">
+    <div class="row g-4">
+      {% for movie in vote_movies %}
+        <div class="col">
+          <div class="card">
+            <a href="{% url 'movies:detail' movie.pk %}">
+              <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+            </a>
+            <div class="card-body">
+              <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
+              <p class="card-text">투표수 : {{ movie.vote_count }}</p>
+              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <hr>
+  
+  {% comment %} {% if request.user is authenticated %} {% endcomment %}
+  <h2 class="mb-3">User's list</h2>
+  <div class="container">
+    <div class="row g-4">
+      {% for movie in person.like_movies.all %}
+        <div class="col">
+          <div class="card">
+            <a href="{% url 'movies:detail' movie.pk %}">
+              <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+            </a>
+            <div class="card-body">
+              <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
+              <p class="card-text">투표수 : {{ movie.vote_count }}</p>
+              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% comment %} {% endif %} {% endcomment %}
   
 {% endblock %}
 

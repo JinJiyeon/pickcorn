@@ -61,4 +61,38 @@ def logout(request):
     return redirect('movies:index')
 
 
-    
+def profile(request, user_pk):
+    person = get_object_or_404(get_user_model(), pk=user_pk)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/profile.html', context)
+
+
+@require_POST
+def follow(request, user_pk):
+    if request.user.is_authenticated:
+        person = get_object_or_404(get_user_model(), pk=user_pk)
+        if request.user != person:
+            if person.followers.filter(pk=request.user.pk).exists():
+                person.followers.remove(request.user)
+            else:
+                person.followers.add(request.user)
+        return redirect('accounts:profile', person.pk)
+    else:
+        return redirect('accounts:login')
+
+
+def followings(request, user_pk):
+    person = get_object_or_404(get_user_model(), pk=user_pk)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/followings.html', context)
+
+def followers(request, user_pk):
+    person = get_object_or_404(get_user_model(), pk=user_pk)
+    context = {
+        'person': person,
+    }
+    return render(request, 'accounts/followers.html', context)
