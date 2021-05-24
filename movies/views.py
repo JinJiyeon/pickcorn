@@ -9,6 +9,7 @@ from .models import Movie, Article, Comment
 from .forms import ArticleForm, CommentForm
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 
 # , Comment, Article
 # from .serializers import (MovieSerializer, 
@@ -30,9 +31,13 @@ def recommend(request, pk):
 
 @require_GET
 def index(request):
-    movies = Movie.objects.all()
+    weighted_vote_movies = Movie.objects.order_by('-weighted_vote')[:5]
+    vote_movies = Movie.objects.order_by('-vote_count')[:5]
+    person = get_object_or_404(get_user_model(), pk=request.user.pk)
     context = {
-        'movies': movies,
+        'weighted_vote_movies': weighted_vote_movies,
+        'vote_movies': vote_movies,
+        'person': person,
     }
     return render(request, 'movies/index.html', context)
 

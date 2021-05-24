@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+  <h1>{{ person.username|title }}의 followers</h1>
+
+  <ul>
+    {% for follower in person.followers.all  %}
+      <li>
+        <a href="{% url 'accounts:profile' follower.pk %}">{{ follower.username|title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+
+{% endblock content %}
