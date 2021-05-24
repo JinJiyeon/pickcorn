@@ -46,27 +46,27 @@
   </div>
   <hr>
   
-  {% comment %} {% if request.user is authenticated %} {% endcomment %}
+  {% if request.user.is_authenticated %}
   <h2 class="mb-3">User's list</h2>
-  <div class="container">
-    <div class="row g-4">
-      {% for movie in person.like_movies.all %}
-        <div class="col">
-          <div class="card">
-            <a href="{% url 'movies:detail' movie.pk %}">
-              <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
-            </a>
-            <div class="card-body">
-              <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-              <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+    <div class="container">
+      <div class="row g-4">
+        {% for movie in person.like_movies.all %}
+          <div class="col">
+            <div class="card">
+              <a href="{% url 'movies:detail' movie.pk %}">
+                <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+              </a>
+              <div class="card-body">
+                <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
+                <p class="card-text">투표수 : {{ movie.vote_count }}</p>
+                <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+              </div>
             </div>
           </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
-  </div>
-  {% comment %} {% endif %} {% endcomment %}
+  {% endif %}
   
 {% endblock %}
 

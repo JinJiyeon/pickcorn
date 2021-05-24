@@ -33,12 +33,18 @@ def recommend(request, pk):
 def index(request):
     weighted_vote_movies = Movie.objects.order_by('-weighted_vote')[:5]
     vote_movies = Movie.objects.order_by('-vote_count')[:5]
-    person = get_object_or_404(get_user_model(), pk=request.user.pk)
-    context = {
+    if request.user.is_authenticated:
+        person = get_object_or_404(get_user_model(), pk=request.user.pk)
+        context = {
         'weighted_vote_movies': weighted_vote_movies,
         'vote_movies': vote_movies,
         'person': person,
-    }
+        }
+    else:
+        context = {
+            'weighted_vote_movies': weighted_vote_movies,
+            'vote_movies': vote_movies,
+        }
     return render(request, 'movies/index.html', context)
 
 
