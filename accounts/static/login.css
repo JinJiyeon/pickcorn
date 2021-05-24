@@ -38,13 +38,6 @@ body {
 }
 
 .signup-btn{
-  margin-top: 5px;
-  background-color: #fd890d;
-  border-color: #fd890d;
-}
-
-.signup{
-  margin-top: 5px;
-  background-color: #fd890d;
+  /* background-color: #fd890d; */
   border-color: #fd890d;
 }
