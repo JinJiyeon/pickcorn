@@ -15,17 +15,46 @@
     <div class="form-floating">
       <input type="text" class="form-control" id="username" placeholder="아이디" name="username" value="{{ form.username.value|default_if_none:'' }}">
       <label for="username">아이디</label>
-      {{ form.username.errors }}
+      <div class="text-light">
+        {{ form.username.errors }}
+      </div>
     </div>
 
-    <div class="form-floating">
+    <div class="form-floating mb-3">
       <input type="password" class="form-control" id="password" placeholder="비밀번호" name="password" value="{{ form.password1.value|default_if_none:'' }}">
       <label for="password">비밀번호</label>
-      {{ form.password.errors }}
+      <div class="text-light">
+        {{ form.password.errors }}
+      </div>
     </div>
 
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+    {% if form.errors %}
+      {% for field in form %}
+          {% for error in field.errors %}  <!-- 필드 오류를 출력한다. -->
+              <div class="alert alert-warning">
+                  <strong>{{ field.label }}</strong>
+                  {{ error }}
+              </div>
+          {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}   <!-- 넌필드 오류를 출력한다. -->
+          <div class="alert alert-warning">
+              <strong>{{ error }}</strong>
+          </div>
+      {% endfor %}
+    {% endif %}
+
+    <button class="w-100 btn btn-lg btn-primary mb-4" type="submit">Log in</button>
+    
+    <div class="text-light">
+      <p>아직 회원이 아니신가요? ಥ_ಥ</p>
+      <a class="signup-btn btn text-light" href="{% url 'accounts:signup' %}" role="button">회원가입</a>
+    </div>
+
     <p class="mt-5 mb-3 text-muted">&copy; PICKCORN :D</p>
+
 </form>
+<a class="text-light btn signup" href="{% url 'accounts:signup' %}" role="button">회원가입</a>
+
 
 {% endblock  %}
