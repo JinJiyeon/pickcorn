@@ -46,15 +46,14 @@
 
     <button class="w-100 btn btn-lg btn-primary mb-4" type="submit">Log in</button>
     
-    <div class="text-light">
-      <p>아직 회원이 아니신가요? ಥ_ಥ</p>
+    <div class="text-light d-flex justify-content-between">
+      <p class="mb-1 mt-2">아직 회원이 아니신가요? ಥ_ಥ</p>
       <a class="signup-btn btn text-light" href="{% url 'accounts:signup' %}" role="button">회원가입</a>
     </div>
 
     <p class="mt-5 mb-3 text-muted">&copy; PICKCORN :D</p>
 
 </form>
-<a class="text-light btn signup" href="{% url 'accounts:signup' %}" role="button">회원가입</a>
 
 
 {% endblock  %}
