@@ -7,7 +7,7 @@
   <p>제목: {{ article.title }}</p>
   <p>영화 제목: {{ movie.title }}</p>
   <p>내용: {{ article.content }}</p>
-  <p>평점: {{ article.rank }}</p>
+  <p>작성자: <a href="{% url 'accounts:profile' article.user.pk %}"> {{ article.user }} </a></p>
   <p>작성 시각: {{ article.created_at }}</p>
   <p>수정 시각: {{ article.updated_at }}</p>
 
@@ -23,7 +23,7 @@
   {% endif %}
   {% for comment in comments %}
     <div>
-      {{ comment.user }} - {{ comment.content }}
+      <a href="{% url 'accounts:profile' comment.user.pk %}">{{ comment.user }}</a> - {{ comment.content }}
       ({{ comment.created_at|date:'Y-m-d H:i' }})
       {% if request.user == comment.user  %}
         {% comment %} <a href="{% url 'movies:update_comment' comment.pk %}">수정</a> {% endcomment %}
