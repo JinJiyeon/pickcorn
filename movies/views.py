@@ -10,6 +10,7 @@ from .forms import ArticleForm, CommentForm
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+import random
 
 # , Comment, Article
 # from .serializers import (MovieSerializer, 
@@ -33,18 +34,72 @@ def recommend(request, pk):
 def index(request):
     weighted_vote_movies = Movie.objects.order_by('-weighted_vote')[:5]
     vote_movies = Movie.objects.order_by('-vote_count')[:5]
+    movies = list(Movie.objects.all())
+    random_movies = random.sample(movies, 5)
+    
+    # 로그인 한 회원일 시
     if request.user.is_authenticated:
         person = get_object_or_404(get_user_model(), pk=request.user.pk)
-        context = {
-        'weighted_vote_movies': weighted_vote_movies,
-        'vote_movies': vote_movies,
-        'person': person,
-        }
+        
+
+        # 유저의 플레이리스트 기반 추천
+        playlist = list(person.like_movies.all())
+        playlist_recom = []
+
+        if (len(playlist) > 2):
+            while len(playlist_recom) < 10:
+                for play in playlist:
+                    playlist_recom += list(play.recommends.all())
+
+                # 중복 제거
+            playlist_recom_set = set(playlist_recom)
+            playlist_recom = list(playlist_recom_set)
+
+            playlist_recom = random.sample(playlist_recom, 5)
+
+        # 팔로우 한 사람의 플레이리스트 기반 추천
+        followingslist = []
+        for following in person.followings.all():
+            followingslist += list(following.like_movies.all())
+        
+        if (len(followingslist) > 0) and (len(followingslist) < 10):
+            while len(followingslist) < 10:
+                add_recom = []
+                for following in followingslist:
+                    add_recom += list(following.recommends.all())
+                followingslist += add_recom
+            
+            followingslist_set = set(followingslist)
+            followingslist = list(followingslist_set)
+
+            followingslist = random.sample(followingslist, 5) 
+
+            context = {
+            'weighted_vote_movies': weighted_vote_movies,
+            'vote_movies': vote_movies,
+            'person': person,
+            'followingslist': followingslist,
+            'playlist_recom': playlist_recom,
+            'random_movies': random_movies,
+            }
+        else: 
+            context = {
+            'weighted_vote_movies': weighted_vote_movies,
+            'vote_movies': vote_movies,
+            'person': person,
+            'playlist_recom': playlist_recom,
+            'random_movies': random_movies,
+            }
+
     else:
         context = {
             'weighted_vote_movies': weighted_vote_movies,
             'vote_movies': vote_movies,
+            'random_movies': random_movies,
         }
+    
+
+
     return render(request, 'movies/index.html', context)
 
 

@@ -21,6 +21,7 @@
           
           <p class="card-text">overview : {{ movie.overview }}</p>
           {% comment %} good or bad {% endcomment %}
+          평가하기: 
           <div class="btn-group" role="group">
             <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
               {% csrf_token %}
@@ -30,7 +31,7 @@
                 <button class="btn btn-outline-primary"><i class="far fa-thumbs-up"></i></button>
               {% endif %}
             </form> 
-
+          
             <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
               {% csrf_token %}
               {% if request.user in movie.rated_bad_users.all %}
@@ -39,18 +40,21 @@
                 <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
               {% endif %}
             </form> 
-
+          </div>
             {% comment %} (찜) 버튼 {% endcomment %}
-
+          <br>
+          <p>
+            
             <form action="{% url 'movies:like' movie.id %}" method="POST">
               {% csrf_token %}
+              내 플레이리스트에 추가하기:
               {% if request.user in movie.like_users.all %}
                 <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-heart heart"></i></span></button>
               {% else %}
                 <button class="btn btn-outline-primary"><i class="far fa-heart heart"></i></button>
               {% endif %}
             </form>
-          </div>
+          </p>
           
           <br>
           <br>
