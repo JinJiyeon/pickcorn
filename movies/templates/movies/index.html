@@ -19,8 +19,8 @@
                 </a>
                 <div class="card-body">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                  <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-                  <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+                  <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+          
                 </div>
               </div>
             </div>
@@ -42,8 +42,9 @@
                   </a>
                   <div class="card-body">
                     <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                    <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-                    <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+
+                    <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+            
                   </div>
                 </div>
               </div>
@@ -66,8 +67,9 @@
                   </a>
                   <div class="card-body">
                     <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                    <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-                    <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+
+                    <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>                    
+            
                   </div>
                 </div>
               </div>
@@ -95,8 +97,8 @@
             </a>
             <div class="card-body">
               <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-              <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+              <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+      
             </div>
           </div>
         </div>
@@ -116,8 +118,8 @@
             </a>
             <div class="card-body">
               <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-              <p class="card-text">평점 순 : {{ movie.weighted_vote }}</p>
-              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+              <p class="card-text">평점 순 : {{ movie.weighted_vote|floatformat }}</p>
+      
             </div>
           </div>
         </div>
@@ -138,7 +140,7 @@
             <div class="card-body">
               <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
               <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+      
             </div>
           </div>
         </div>
