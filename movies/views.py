@@ -11,6 +11,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 import random
+from django.contrib.auth.decorators import login_required
 
 # , Comment, Article
 # from .serializers import (MovieSerializer, 
@@ -22,13 +23,6 @@ import random
 # )
 # Create your views here.
 
-def recommend(request, pk):
-    movie = get_object_or_404(Movie, id=pk)
-    data = serializers.serialize('json', [movie])
-    context = {
-        'data': data
-    }
-    return render(request, 'movies/recommend.html', context)
 
 @require_GET
 def index(request):
@@ -56,7 +50,8 @@ def index(request):
             playlist_recom = list(playlist_recom_set)
 
             playlist_recom = random.sample(playlist_recom, 5)
-
+   
+        
         # 팔로우 한 사람의 플레이리스트 기반 추천
         followingslist = []
         for following in person.followings.all():
@@ -226,10 +221,14 @@ def like(request, movie_pk):
             'count': movie.like_users.count()
         }
         
-        return redirect('movies:detail', movie.pk)
-    return redirect('accounts:login')
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
+    # return redirect('accounts:login')
+    # request.GET.get('next') = 
+    return HttpResponse(status=401)
 
-
+@require_POST
+@login_required
 def rate_good(request, movie_pk):
     if request.user.is_authenticated:
         movie = get_object_or_404(Movie, pk=movie_pk)
@@ -250,9 +249,12 @@ def rate_good(request, movie_pk):
             'rated_good_count': movie.rated_good_users.count()
         }
         
-        return redirect('movies:detail', movie.pk)
-    return redirect('accounts:login')
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
+    # return redirect('accounts:login')
+    return HttpResponse(status=401)
 
+@require_POST
 def rate_bad(request, movie_pk):
     if request.user.is_authenticated:
         movie = get_object_or_404(Movie, pk=movie_pk)
@@ -273,9 +275,11 @@ def rate_bad(request, movie_pk):
             'rated_bad_count': movie.rated_bad_users.count()
         }
         
-        return redirect('movies:detail', movie.pk)
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
 
-    return redirect('accounts:login')
+    # return redirect('accounts:login')
+    return HttpResponse(status=401)
 
 # @api_view(['GET','POST'])
 # def movie_articles(request, movie_pk):

@@ -22,15 +22,17 @@
           <p class="card-text">overview : {{ movie.overview }}</p>
           {% comment %} good or bad {% endcomment %}
           평가하기: 
+
+
           <div class="btn-group" role="group">
-            <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
+            {% comment %} <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
               {% csrf_token %}
               {% if request.user in movie.rated_good_users.all %}
                 <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-thumbs-up"></i></span></button>
               {% else %}
                 <button class="btn btn-outline-primary"><i class="far fa-thumbs-up"></i></button>
               {% endif %}
-            </form> 
+            </form>  
           
             <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
               {% csrf_token %}
@@ -39,20 +41,51 @@
               {% else %}
                 <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
               {% endif %}
+            </form>  {% endcomment %}
+            
+
+            <form action="{% url 'movies:rate_good' movie.id %}" method="POST" class="rated-good-form" data-movie-id="{{ movie.pk }}">
+              {% csrf_token %}
+                <button class="btn btn-outline-primary">
+                {% if request.user in movie.rated_good_users.all %}
+                  <span style="color: Tomato;" class="rated-good-color"><i class="fas fa-thumbs-up rated-good-fill"></i></span>
+                {% else %}
+                  <span class="rated-good-color"><i class="far fa-thumbs-up rated-good-fill"></i></span>
+                {% endif %}
+                </button>
+              </i></button>
             </form> 
+
+            <form action="{% url 'movies:rate_bad' movie.id %}" method="POST" class="rated-bad-form" data-movie-id="{{ movie.pk }}">
+              {% csrf_token %}
+              <button class="btn btn-outline-primary rated-bad-colo">
+              {% if request.user in movie.rated_bad_users.all %}
+                <i class="fas fa-thumbs-down rated-bad-fill"></i>
+              {% else %}
+                <i class="far fa-thumbs-down rated-bad-fill"></i>
+              {% endif %}
+              </button>
+            </form>  
           </div>
+
+
+
+           
+
             {% comment %} (찜) 버튼 {% endcomment %}
           <br>
           <p>
             
-            <form action="{% url 'movies:like' movie.id %}" method="POST">
+            <form action="{% url 'movies:like' movie.id %}" method="POST" class="like-form" data-movie-id="{{ movie.pk }}">
               {% csrf_token %}
               내 플레이리스트에 추가하기:
+              <button class="btn btn-outline-primary">
               {% if request.user in movie.like_users.all %}
-                <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-heart heart"></i></span></button>
+                <span style="color: Tomato;" class="like-color"><i class="fas fa-heart heart like-fill"></i></span>
               {% else %}
-                <button class="btn btn-outline-primary"><i class="far fa-heart heart"></i></button>
+                <span class="like-color"><i class="far fa-heart heart like-fill"></i></span>
               {% endif %}
+              </button>
             </form>
           </p>
           
@@ -106,4 +139,115 @@
 
   <hr>
 
+<script>
+  const rateGood = document.querySelector('.rated-good-form')
+  const rateBad = document.querySelector('.rated-bad-form')
+  const addPlaylist = document.querySelector('.like-form')
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+  rateGood.addEventListener('submit', event => {
+    event.preventDefault()  
+    const movieId = event.target.dataset.movieId
+    axios({
+      url: `/movies/${movieId}/rate_good/`,
+      method: 'post',
+      headers : {
+        'X-CSRFToken': csrfToken,   
+      },
+    })
+    .then(function (response) {
+      const { rated_good, rated_good_count } = response.data
+      const ratedGoodColor = document.querySelector(`.rated-good-color`)
+      const ratedGoodFill = document.querySelector(`.rated-good-fill`)
+      ratedGoodFill.classList.remove('fas', 'far')
+      ratedGoodColor.style.color = rated_good? 'Tomato' : ''
+      ratedGoodFill.className += rated_good? ' fas' : ' far'
+    })
+    .catch( function (error) {
+      switch (error.response.status) {
+        case 401: {
+          // 로그인 페이지로 보내준다
+          location.href = '/accounts/login/?next='+location.pathname
+          break
+        }
+        default: {
+          // 에러메세지를 경고창으로 표시한다
+          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+        }
+      }
+    })
+  })
+
+  rateBad.addEventListener('submit', event => {
+    event.preventDefault()  
+    const movieId = event.target.dataset.movieId
+    axios({
+      url: `/movies/${movieId}/rate_bad/`,
+      method: 'post',
+      headers : {
+        'X-CSRFToken': csrfToken,   
+      },
+    })
+    .then(function (response) {
+      const { rated_bad, rated_bad_count } = response.data
+      const ratedBadFill = document.querySelector(`.rated-bad-fill`)
+      ratedBadFill.classList.remove('fas', 'far')
+      ratedBadFill.className += rated_bad? ' fas' : ' far'
+    })
+    .catch( function (error) {
+      switch (error.response.status) {
+        case 401: {
+          // 로그인 페이지로 보내준다
+          location.href = '/accounts/login/?next='+location.pathname
+          break
+        }
+        default: {
+          // 에러메세지를 경고창으로 표시한다
+          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+        }
+      }
+    })
+  }) 
+
+  addPlaylist.addEventListener('submit', event => {
+    event.preventDefault()  
+    const movieId = event.target.dataset.movieId
+    axios({
+      url: `/movies/${movieId}/like/`,
+      method: 'post',
+      headers : {
+        'X-CSRFToken': csrfToken,   
+      },
+    })
+    .then(function (response) {
+      const { liked, count } = response.data
+      const likedColor = document.querySelector(`.like-color`)
+      const likedFill = document.querySelector(`.like-fill`)
+      likedFill.classList.remove('fas', 'far')
+      likedColor.style.color = liked? 'Tomato' : ''
+      likedFill.className += liked? ' fas' : ' far'
+    })
+    .catch( function (error) {
+      switch (error.response.status) {
+        case 401: {
+          // 로그인 페이지로 보내준다
+          location.href = '/accounts/login/?next='+location.pathname
+          break
+        }
+        default: {
+          // 에러메세지를 경고창으로 표시한다
+          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+        }
+      }
+    
+        // parameter에 현재 Path의 정보를 심어줘야함
+        // 현재 path에 대한 정보를 next에 담는다
+        // 사용자를 로그인 페이지로 이동시킨다
+        // 로그인으로 이동시킬 때 next라는 파라미터가 붙는다
+        
+    })
+  }) 
+
+  
+</script>
 {% endblock %}
