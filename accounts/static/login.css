@@ -41,3 +41,7 @@ body {
   /* background-color: #fd890d; */
   border-color: #fd890d;
 }
+
+.text-dark{
+  color: black
+}

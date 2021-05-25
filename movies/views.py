@@ -26,8 +26,12 @@ from django.contrib.auth.decorators import login_required
 
 @require_GET
 def index(request):
-    weighted_vote_movies = Movie.objects.order_by('-weighted_vote')[:5]
-    vote_movies = Movie.objects.order_by('-vote_count')[:5]
+    weighted_vote_movies = list(Movie.objects.order_by('-weighted_vote')[:30])
+    vote_movies = list(Movie.objects.order_by('-vote_count')[:30])
+
+    weighted_vote_movies = random.sample(weighted_vote_movies, 5)
+    vote_movies = random.sample(vote_movies, 5)
+    
     movies = list(Movie.objects.all())
     random_movies = random.sample(movies, 5)
     
@@ -103,10 +107,19 @@ def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     articles = movie.article_set.all()
     
+    movie_good = movie.rated_good_users.count()
+    moive_bad = movie.rated_bad_users.count()
+    if movie_good or moive_bad:
+        movie_score = (movie_good / (movie_good+moive_bad)) * 100
+    else:
+        movie_score = 0
+    movie_votes = movie_good + moive_bad
+    
     context = {
         'movie': movie,
         'articles': articles,
-        
+        'movie_score': movie_score,
+        'movie_votes': movie_votes,
     }
     return render(request, 'movies/detail.html', context)
 
@@ -131,6 +144,7 @@ def article_create(request, movie_pk):
     return render(request, 'movies/article_create.html', context)
 
 
+@require_http_methods(['GET', 'POST'])
 def article_update(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     movie = get_object_or_404(Movie, pk=article.movie_id)
@@ -152,6 +166,7 @@ def article_update(request, article_pk):
         return render(request, 'movies/article_update.html', context)
 
     return redirect('movies:detail', movie.pk)
+
 
 
 def article_delete(request, article_pk):
@@ -194,7 +209,7 @@ def create_comment(request, article_pk):
     }
     return render(request, 'movies/detail.html', context)
 
-
+@require_POST
 def delete_comment(request, comment_pk):
     comment = get_object_or_404(Comment, pk=comment_pk)
     article = get_object_or_404(Article, pk=comment.article_id)

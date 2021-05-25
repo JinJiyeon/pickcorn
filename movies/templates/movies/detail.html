@@ -15,10 +15,8 @@
         <div class="card-body">
           <h1 class="text-center card-title">{{ movie.title }}</h1>
           {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
-          <p class="card-text">TMDB 평점 : {{ movie.vote_average }} ({{ movie.vote_count }} votes)</p>
+          <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
 
-          <p>pickcorn Score: {{ movie.rated_good_users.count }} / ({{ movie.rated_good_users.count }} + {{ movie.rated_bad_users.count }}) * 100</p>
-          
           <p class="card-text">overview : {{ movie.overview }}</p>
           {% comment %} good or bad {% endcomment %}
           평가하기: 
@@ -66,6 +64,22 @@
               {% endif %}
               </button>
             </form>  
+            <br>
+          </div>
+
+          <hr>
+          
+          <div>
+            pickcorn 추천: 
+            {% if movie_score != 0 %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ movie_score }}%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100">{{ movie_score }}% ({{ movie_votes }} votes)</div>
+              </div>
+            {% else %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-secondary progress-bar-striped" role="progressbar" style="width: 100%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100" style="color: black;">{{ movie_score }}% ({{ movie_votes }} votes)</div>
+              </div>
+            {% endif %}
           </div>
 
 
@@ -87,29 +101,47 @@
               {% endif %}
               </button>
             </form>
-          </p>
+          </div>
           
-          <br>
-          <br>
+          <hr>
 
           <h4>Ongoing Reviews </h4>
+          <br>
           {% if articles|length %}
             <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
-          {% endif %}
-          {% for article in articles %}
-            <div>
-              {{ article.user }} - {{ article.title }}
-              <a href="{% url 'movies:article_detail' article.pk %}">[Detail]</a>
-            </div>
-          {% empty %}
-            <p><b>리뷰가 없어요..</b></p>
-          {% endfor %}
 
+            <ol class="list-group list-group-numbered">
+              {% for article in articles %}
+
+              <a href="{% url 'movies:article_detail' article.pk %}" class="text-decoration-none">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  {% if article.user in movie.rated_good_users.all %}
+                    <h2>😆🍿</h2>
+                  {% elif article.user in movie.rated_bad_users.all %}
+                    <h2>🤔🗑</h2>
+                  {% else %}
+                    <h2>🥚</h2>
+                  {% endif %}
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">{{ article.title }}</div>
+                    작성자: {{ article.user }}
+                    ({{ article.created_at|timesince }} 전)
+                  </div>
+                  <span class="badge bg-primary rounded-pill"> {{ article.comment_set.count }}  comments </span>
+                </li>
+              </a>
+              {% endfor %}
+            </ol>
+
+          {% else %}
+            <p><b>아직 리뷰가 없어요..😥</b></p>
+          {% endif %}
           <hr>
 
           {% if request.user.is_authenticated %}
-            리뷰 작성하기
-            <a href="{% url 'movies:article_create' movie.id %}">✏</a>
+            <form action="{% url 'movies:article_create' movie.id %}">
+              <button class="btn btn-success">리뷰 작성하기 ✏</button>
+            </form>
           {% else %}
             <a href="{% url 'accounts:login' %}">리뷰를 작성하려면 로그인하세요.</a>
           {% endif %}
@@ -125,17 +157,26 @@
   <hr>
 
   <h3>추천 영화</h3>
+
   <div class="row">
     <p>{{ message }}</p>
     {% for recom in movie.recommends.all %}
-      <div class="col-sm-4">
+
+      <div class="card bg-transparent text-white col-sm-4">
         <a href="{% url 'movies:detail' recom.pk %}">
-          <p>{{ recom.title }}</p>
-          <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" width="auto">     
+          <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="card-img" alt="...">
+          <div class="card-img-overlay">
+            <h3 class="text-center"><span class="badge bg-secondary">{{ recom.title }}</span></h3>
+            <div class="badge bg-primary text-wrap" style="width: 8rem">
+              평점: {{ recom.weighted_vote|floatformat }}
+            </div>
+          </div>
         </a>
-      </div>    
+      </div>
     {% endfor %}
   </div>
+
+
 
   <hr>
 
