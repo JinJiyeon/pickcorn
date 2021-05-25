@@ -71,13 +71,16 @@
     <h2 class="accordion-header" id="headingOne">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
         <b>{{ person.username }}</b> created {{ person.article_set.all|length }} reviews
+        
       </button>
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <ul>
         {% for article in person.article_set.all %}
-        <li>{{ article.title }}</li>
+          <a href="{% url 'movies:article_detail' article.pk %}">
+            <li>{{ article.title }}</li>
+          </a>
         {% endfor %}
         </ul>
       </div>
@@ -94,8 +97,10 @@
     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <ul>
-        {% for article in person.article_set.all %}
-        <li>{{ article.title }}</li>
+        {% for comment in person.comment_set.all %}
+          <a href="{% url 'movies:article_detail' comment_article.pk %}">
+            <li>{{ comment.content }}</li>
+          </a>
         {% endfor %}
         </ul>
       </div>

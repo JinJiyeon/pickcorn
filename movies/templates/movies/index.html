@@ -138,6 +138,9 @@
       <hr>
     {% endif %}
 
+  <hr>
+  {% else %}
+  
   {% endif %}
 
   <h2 class="mb-3 text-light">Random Movies</h2>
@@ -156,9 +159,33 @@
                 </div>
               </div>
             </div>
-          {% endfor %}
+          </div>
         </div>
-      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <hr>
+
+  <h2 class="mb-3">Top Rated</h2>
+  <div class="container">
+    <div class="row g-4">
+      {% for movie in weighted_vote_movies %}
+        <div class="col">
+          <div class="card">
+            <a href="{% url 'movies:detail' movie.pk %}">
+              <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+            </a>
+            <div class="card-body">
+              <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
+              <p class="card-text">평점 순 : {{ movie.weighted_vote }}</p>
+              <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <hr>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.js"></script>
   <script>
