@@ -18,7 +18,9 @@
   {% comment %} <nav class="navbar navbar-expand-lg navbar-dark sticky-top fixed-top"> {% endcomment %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-warning d-flex justify-content-between align-items-center px-3 p-3 fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'movies:index' %}">PICKCORN</a>
+    {% comment %} 로고 {% endcomment %}
+      <a class="navbar-brand" href="{% url 'movies:index' %}"><img src="{% static 'pickcorn2.png' %}" alt="" width="50"></a>
+    {% comment %}  {% endcomment %}
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
