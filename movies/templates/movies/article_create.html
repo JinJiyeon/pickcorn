@@ -1,12 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 class="text-center"> {{ movie.title }} 리뷰 작성하기</h1>
-  <form action="{% url 'movies:article_create' movie.pk %}" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit">
-  </form>
-  <hr>
-  <a href="{% url 'movies:detail' movie.pk %}">[back]</a>
+  
+  <style>
+  body {
+    background-image: url("https://image.tmdb.org/t/p/original/{{ movie.poster_path }}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+  </style>
+  
+{% load crispy_forms_tags %}
+
+<div class="card">
+  <div class="card-header">
+    {{ movie.title }}
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">리뷰 작성하기</h5>
+    <p class="card-text">
+      <form action="#" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" class="btn btn-primary">
+      </form>
+    </p>
+  </div>
+</div>
+
+<br>
+<a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">back</a>
+<hr>
+
 {% endblock %}
