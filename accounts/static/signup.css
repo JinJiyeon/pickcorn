@@ -36,3 +36,7 @@ body {
 .text-light{
   color: aliceblue;
 }
+
+.text-dark{
+  color: black;
+}
