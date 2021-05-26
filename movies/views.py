@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 import random
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from accounts.models import User
 
 
 # @require_GET
@@ -371,3 +372,29 @@ def rate_bad(request, movie_pk):
     return redirect('accounts:login')
     # return HttpResponse(status=401)
 
+
+def homepage(request):
+    return render(request, 'movies/homepage.html')
+
+def searchpage(request):
+    search = request.GET['query']
+    movies = Movie.objects.filter(title__icontains=search).order_by('-weighted_vote')
+
+    users = User.objects.filter(username__icontains=search)
+
+    paginator = Paginator(movies, 30)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
+    user_paginator = Paginator(users, 30)
+    user_page = request.GET.get('page')
+    user_posts = user_paginator.get_page(user_page)
+
+    context = {
+        'movies': movies,
+        'search': search,
+        'users': users,
+        'posts': posts,
+        'user_posts': user_posts,
+    }
+    return render(request, 'movies/searchpage.html', context)

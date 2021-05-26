@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col">
+      <br>
+      <h1>검색하기</h1>
+      <br>
+      <form action="{% url 'movies:searchpage' %}">
+        <input type="text" name="query" placeholder="Search here..!">
+        <button type="submit" class="btn alert-info mx-2">🔎</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
