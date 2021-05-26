@@ -17,7 +17,7 @@
           <!-- 평점 & 찜하기 버튼 한 블럭에-->
           <div class="d-flex justify-content-between">
             <p class="card-text">tmdb vote : {{ movie.weighted_vote|floatformat }}</p>
-            <form action="{% url 'movies:like' movie.id %}" method="POST" class="like-form d-inline" data-movie-id="{{ movie.pk }}">
+            <form action="{% url 'movies:like' movie.id %}" method="POST" class="d-inline" id="like-form" data-movie-id="{{ movie.pk }}">
               {% csrf_token %}
               <button class="btn btn-outline-primary">
               {% if request.user in movie.like_users.all %}
@@ -153,115 +153,25 @@
 
   <hr>
 
-{% comment %} <script>
-  const rateGood = document.querySelector('.rated-good-form')
-  const rateBad = document.querySelector('.rated-bad-form')
-  const addPlaylist = document.querySelector('.like-form')
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+<script>
+  const likeForm = document.querySelector('#like-form')
+  console.log('선택됨')
 
-  rateGood.addEventListener('submit', event => {
-    event.preventDefault()  
-    const movieId = event.target.dataset.movieId
-    axios({
-      url: `/movies/${movieId}/rate_good/`,
-      method: 'post',
-      headers : {
-        'X-CSRFToken': csrfToken,   
-      },
-    })
-    .then(function (response) {
-      const { rated_good, rated_good_count } = response.data
-      const ratedGoodColor = document.querySelector(`.rated-good-color`)
-      const ratedGoodFill = document.querySelector(`.rated-good-fill`)
-      ratedGoodFill.classList.remove('fas', 'far')
-      ratedGoodColor.style.color = rated_good? 'Tomato' : ''
-      ratedGoodFill.className += rated_good? ' fas' : ' far'
-    })
-    .catch( function (error) {
-      switch (error.response.status) {
-        case 401: {
-          // 로그인 페이지로 보내준다
-          location.href = '/accounts/login/?next='+location.pathname
-          break
-        }
-        default: {
-          // 에러메세지를 경고창으로 표시한다
-          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
-        }
-      }
-    })
-  })
+  likeForm.addEventListener('submit', event => {
+    event.preventDefault()
 
-  rateBad.addEventListener('submit', event => {
-    event.preventDefault()  
+    console.log(event.target.dataset.movieId)
     const movieId = event.target.dataset.movieId
-    axios({
-      url: `/movies/${movieId}/rate_bad/`,
-      method: 'post',
-      headers : {
-        'X-CSRFToken': csrfToken,   
-      },
-    })
-    .then(function (response) {
-      const { rated_bad, rated_bad_count } = response.data
-      const ratedBadFill = document.querySelector(`.rated-bad-fill`)
-      ratedBadFill.classList.remove('fas', 'far')
-      ratedBadFill.className += rated_bad? ' fas' : ' far'
-    })
-    .catch( function (error) {
-      switch (error.response.status) {
-        case 401: {
-          // 로그인 페이지로 보내준다
-          location.href = '/accounts/login/?next='+location.pathname
-          break
-        }
-        default: {
-          // 에러메세지를 경고창으로 표시한다
-          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
-        }
-      }
-    })
-  }) 
 
-  addPlaylist.addEventListener('submit', event => {
-    event.preventDefault()  
-    const movieId = event.target.dataset.movieId
     axios({
       url: `/movies/${movieId}/like/`,
-      method: 'post',
       headers : {
-        'X-CSRFToken': csrfToken,   
+        'X-CSRFToken': csrfToken,       
       },
     })
-    .then(function (response) {
-      const { liked, count } = response.data
-      const likedColor = document.querySelector(`.like-color`)
-      const likedFill = document.querySelector(`.like-fill`)
-      likedFill.classList.remove('fas', 'far')
-      likedColor.style.color = liked? 'Tomato' : ''
-      likedFill.className += liked? ' fas' : ' far'
+    .then( function ( response ) {
+      console.log(response)
     })
-    .catch( function (error) {
-      switch (error.response.status) {
-        case 401: {
-          // 로그인 페이지로 보내준다
-          location.href = '/accounts/login/?next='+location.pathname
-          break
-        }
-        default: {
-          // 에러메세지를 경고창으로 표시한다
-          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
-        }
-      }
-    
-        // parameter에 현재 Path의 정보를 심어줘야함
-        // 현재 path에 대한 정보를 next에 담는다
-        // 사용자를 로그인 페이지로 이동시킨다
-        // 로그인으로 이동시킬 때 next라는 파라미터가 붙는다
-        
-    })
-  })  {% endcomment %}
-
-  
+  })
 </script>
 {% endblock %}
