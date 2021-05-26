@@ -30,6 +30,10 @@
 }
 
 body {
+  /* $theme-colors: (
+    "primary": $primary,
+    "danger": $danger
+  ); */
   background: #000000;
   /* background-color: #fff; */
   color: white;
@@ -39,3 +43,5 @@ body {
 .navbar-collapse{
   justify-content: space-between;
 }
+
+
