@@ -2,7 +2,7 @@
   height: 50px;
   padding: 1rem;
   color: white;
-  background: rgb(100, 95, 92);
+  /* background: rgb(100, 95, 92); */
   font-weight: bold;
   display: flex;
   /* justify-content: space-between; */
@@ -19,6 +19,8 @@
 
 body {
   background: #000000;
+  /* background-color: #fff; */
+  color: white;
 }
 
 .navbar-collapse{
