@@ -114,35 +114,68 @@
       </button>
     </h2>
     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <ul>
-        {% for good in person.rated_good_movies.all %}
-          <li>{{ good.title }}</li>
-          <a href="{% url 'movies:detail' good.pk %}">
-            <img src="https://image.tmdb.org/t/p/original/{{ good.poster_path }}" alt="no photos yet" width="180">
-          </a>
+      <div class="accordion-body row">
+
+        {% for good in posts %}
+          {% comment %} <p>{{ good.title }}</p> {% endcomment %}
+          <div class="col-4">
+            <a href="{% url 'movies:detail' good.pk %}">
+              <img src="https://image.tmdb.org/t/p/original/{{ good.poster_path }}" alt="no photos yet">
+            </a>
+          </div>
         {% endfor %}
-        </ul>
+
+      </div>
+      <div class="">
+        {% if posts.has_previous %}
+        <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
+        <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+        {% endif %}
+        <span>{{ posts.number }}</span>
+        <span>/</span>
+        <span>{{ posts.paginator.num_pages }}</span>
+        {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+        <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
+        {% endif %}
       </div>
     </div>
 
     <!--  찜한 영화와 숫자 -->
     <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
           <p><b>{{ person.username }}</b>'s playlist</p>
       </button>
     </h2>
-    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne" data-bs-parent="#panelsStayOpen-headingOne">
+    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <ul>
-        {% for like in person.like_movies.all %}
-          <li>{{ like.title }}</li>
-          <a href="{% url 'movies:detail' like.pk %}">
-            <img src="https://image.tmdb.org/t/p/original/{{ like.poster_path }}" alt="no photos yet" width="180">
-          </a>
-        {% endfor %}
-        </ul>
+        <div class="container">
+          <div class="row">
+            {% for like in like_posts %}
+            <div class="card bg-transparent col-4">
+              <a href="{% url 'movies:detail' like.pk %}">
+                <img src="https://image.tmdb.org/t/p/original/{{ like.poster_path }}" alt="no photos yet">
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="">
+          {% if like_posts.has_previous %}
+          <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
+          <a href="?page={{ like_posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+          {% endif %}
+          <span>{{ like_posts.number }}</span>
+          <span>/</span>
+          <span>{{ like_posts.paginator.num_pages }}</span>
+          {% if like_posts.has_next %}
+          <a href="?page={{ like_posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+          <a href="?page={{ like_posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
+          {% endif %}
+        </div>
+
       </div>
     </div>
     

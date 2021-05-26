@@ -14,7 +14,6 @@ import random
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
-
 @require_GET
 def index(request):
     weighted_vote_movies = list(Movie.objects.order_by('-weighted_vote')[:30])
@@ -250,11 +249,17 @@ def article_detail(request, article_pk):
     movie = get_object_or_404(Movie, pk=article.movie_id)
     comments = article.comment_set.all()
     comment_form = CommentForm()
+
+    paginator = Paginator(comments, 5)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
     context = {
         'article': article,
         'comment_form': comment_form,
         'comments': comments,
         'movie': movie,
+        'posts': posts,
     }
     return render(request, 'movies/article_detail.html', context)
 

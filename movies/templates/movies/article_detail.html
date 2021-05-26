@@ -23,9 +23,9 @@
           <div class="col text-center">
             
             {% if article.user in movie.rated_good_users.all %}
-              <h2> 😆🍿</h2>
+              <h2> 😆</h2>
             {% elif article.user in movie.rated_bad_users.all %}
-              <h2> 🤔🗑</h2>
+              <h2> 🤔</h2>
             {% else %}
               <h2> 🥚</h2>
             {% endif %}
@@ -60,7 +60,57 @@
           {% if comments|length %}
             <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
           {% endif %}
-          {% for comment in comments %}
+
+          <div class="container">
+            {% for comment in posts %}
+              <div class="card w-75 container bg-dark border-dark my-2">
+                <div class="card-body row d-flex justify-content-between align-items-center">
+                  <div class="col-10">
+                    <h5 class="card-title">
+                      {% if article.user in movie.rated_good_users.all %}
+                        😆
+                      {% elif article.user in movie.rated_bad_users.all %}
+                        🤔
+                      {% else %}
+                        🥚
+                      {% endif %}
+                      <a href="{% url 'accounts:profile' comment.user.pk %}" class="text-decoration-none">{{ comment.user }}</a> 📣 {{ comment.content }}
+                    </h5>
+                    <span>({{ comment.created_at|timesince }} 전)</span>
+                  </div>
+                  <div class="col-2">
+                    {% if request.user == comment.user  %}
+                    <span class="card-body text-end">
+                      <form action="{% url 'movies:delete_comment' comment.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-primary">삭제</button>
+                      </form>
+                    </span>
+                    {% endif %}
+                  </div>
+                </div>     
+              </div>
+            {% empty %}
+              <p><b>아직 댓글이 없어요..😥</b></p>
+            {% endfor %}
+          
+            <br>
+            <div class="">
+              {% if posts.has_previous %}
+              <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
+              <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+              {% endif %}
+              <span>{{ posts.number }}</span>
+              <span>/</span>
+              <span>{{ posts.paginator.num_pages }}</span>
+              {% if posts.has_next %}
+              <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+              <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
+              {% endif %}
+            </div>
+          </div>
+
+          {% comment %} {% for comment in comments %}
             <div class="card w-75 container bg-dark border-dark">
               <div class="card-body row d-flex justify-content-between align-items-center">
                 <div class="col-10">
@@ -87,11 +137,9 @@
                   {% endif %}
                 </div>
               </div>     
-            </div>
+            </div> {% endcomment %}
             <br>
-          {% empty %}
-            <p><b>아직 댓글이 없어요..😥</b></p>
-          {% endfor %}
+
           <hr>
           {% if request.user.is_authenticated %}
             <form action="{% url 'movies:create_comment' article.pk %}" method="POST">
