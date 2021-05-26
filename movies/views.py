@@ -1,5 +1,4 @@
 from django.core import serializers
-# from .serializers import MovieSerializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -16,84 +15,6 @@ from django.core.paginator import Paginator
 from accounts.models import User
 
 
-# @require_GET
-# def index(request):
-#     weighted_vote_movies = list(Movie.objects.order_by('-weighted_vote')[:30])
-#     vote_movies = list(Movie.objects.order_by('-vote_count')[:30])
-
-#     weighted_vote_movies = random.sample(weighted_vote_movies, 5)
-#     vote_movies = random.sample(vote_movies, 5)
-    
-#     movies = list(Movie.objects.all())
-#     random_movies = random.sample(movies, 5)
-    
-#     # 로그인 한 회원일 시
-#     if request.user.is_authenticated:
-#         person = get_object_or_404(get_user_model(), pk=request.user.pk)
-        
-
-#         # 유저의 플레이리스트 기반 추천
-#         playlist = list(person.like_movies.all())
-#         playlist_recom = []
-
-#         if (len(playlist) > 2):
-#             while len(playlist_recom) < 10:
-#                 for play in playlist:
-#                     playlist_recom += list(play.recommends.all())
-
-#                 # 중복 제거
-#             playlist_recom_set = set(playlist_recom)
-#             playlist_recom = list(playlist_recom_set)
-
-#             playlist_recom = random.sample(playlist_recom, 5)
-   
-        
-#         # 팔로우 한 사람의 플레이리스트 기반 추천
-#         followingslist = []
-#         for following in person.followings.all():
-#             followingslist += list(following.like_movies.all())
-        
-#         if (len(followingslist) > 0) and (len(followingslist) < 10):
-#             while len(followingslist) < 10:
-#                 add_recom = []
-#                 for following in followingslist:
-#                     add_recom += list(following.recommends.all())
-#                 followingslist += add_recom
-            
-#             followingslist_set = set(followingslist)
-#             followingslist = list(followingslist_set)
-
-#             followingslist = random.sample(followingslist, 5) 
-
-#             context = {
-#             'weighted_vote_movies': weighted_vote_movies,
-#             'vote_movies': vote_movies,
-#             'person': person,
-#             'followingslist': followingslist,
-#             'playlist_recom': playlist_recom,
-#             'random_movies': random_movies,
-
-#             }
-#         else: 
-#             context = {
-#             'weighted_vote_movies': weighted_vote_movies,
-#             'vote_movies': vote_movies,
-#             'person': person,
-#             'playlist_recom': playlist_recom,
-#             'random_movies': random_movies,
-
-#             }
-
-#     else:
-#         context = {
-#             'weighted_vote_movies': weighted_vote_movies,
-#             'vote_movies': vote_movies,
-#             'random_movies': random_movies,
-#         }
-    
-
-
-#     return render(request, 'movies/index.html', context)
 
 @require_GET
 def index(request):
@@ -126,6 +47,7 @@ def index(request):
         rated_bad = list(person.rated_bad_movies.all())
 
         # 중복 제거 + 싫어요한 영화는 제거 
+        playlist = list(set(playlist))
         playlist_recom_set = set(playlist_recom)
         playlist_recom = list(playlist_recom_set.difference(playlist, rated_good, rated_bad))
 
@@ -301,83 +223,85 @@ def delete_comment(request, comment_pk):
     
     return redirect('movies:article_detail', article.pk)
 
-@require_POST
+# @require_POST
+@login_required
 def like(request, movie_pk):
-    if request.user.is_authenticated:
-        movie = get_object_or_404(Movie, pk=movie_pk)
-        user = request.user
+    # if request.user.is_authenticated:
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    user = request.user
 
-        if movie.like_users.filter(pk=user.pk).exists():
-            movie.like_users.remove(user)
-            liked=False
-        else:
-            movie.like_users.add(user)
-            liked=True
+    if movie.like_users.filter(pk=user.pk).exists():
+        movie.like_users.remove(user)
+        liked=False
+    else:
+        movie.like_users.add(user)
+        liked=True
 
-        response_data = {
-            'liked': liked,
-            'count': movie.like_users.count()
-        }
-        
-        return redirect('movies:detail', movie.pk)
-        # return JsonResponse(response_data)
-    return redirect('accounts:login')
+    response_data = {
+        'liked': liked,
+        'count': movie.like_users.count()
+    }
+    
+    return redirect('movies:detail', movie.pk)
+    # return JsonResponse(response_data)
+    # return redirect('accounts:login')
     # next_url = request.GET.get('next')
     # return redirect(next_url)
     # return HttpResponse(status=401)
 
-@require_POST
+# @require_POST
 @login_required
 def rate_good(request, movie_pk):
-    if request.user.is_authenticated:
-        movie = get_object_or_404(Movie, pk=movie_pk)
-        user = request.user
+    # if request.user.is_authenticated:
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    user = request.user
 
-        if movie.rated_good_users.filter(pk=user.pk).exists():
-            movie.rated_good_users.remove(user)
-            rated_good=False
-        else:
-            movie.rated_good_users.add(user)
-            rated_good=True
-            if movie.rated_bad_users.filter(pk=user.pk).exists():
-                movie.rated_bad_users.remove(user)
-                rated_bad=False
-
-        response_data = {
-            'rated_good': rated_good,
-            'rated_good_count': movie.rated_good_users.count()
-        }
-        
-        return redirect('movies:detail', movie.pk)
-        # return JsonResponse(response_data)
-    return redirect('accounts:login')
-    # return HttpResponse(status=401)
-
-@require_POST
-def rate_bad(request, movie_pk):
-    if request.user.is_authenticated:
-        movie = get_object_or_404(Movie, pk=movie_pk)
-        user = request.user
-
+    if movie.rated_good_users.filter(pk=user.pk).exists():
+        movie.rated_good_users.remove(user)
+        rated_good=False
+    else:
+        movie.rated_good_users.add(user)
+        rated_good=True
         if movie.rated_bad_users.filter(pk=user.pk).exists():
             movie.rated_bad_users.remove(user)
             rated_bad=False
-        else:
-            movie.rated_bad_users.add(user)
-            rated_bad=True
-            if movie.rated_good_users.filter(pk=user.pk).exists():
-                movie.rated_good_users.remove(user)
-                rated_good=False
 
-        response_data = {
-            'rated_bad': rated_bad,
-            'rated_bad_count': movie.rated_bad_users.count()
-        }
-        
-        return redirect('movies:detail', movie.pk)
+    response_data = {
+        'rated_good': rated_good,
+        'rated_good_count': movie.rated_good_users.count()
+    }
+
+    return redirect('movies:detail', movie.pk)
+    # return JsonResponse(response_data)
+    # return redirect('accounts:login')
+    # return HttpResponse(status=401)
+
+# @require_POST
+@login_required
+def rate_bad(request, movie_pk):
+    # if request.user.is_authenticated:
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    user = request.user
+
+    if movie.rated_bad_users.filter(pk=user.pk).exists():
+        movie.rated_bad_users.remove(user)
+        rated_bad=False
+    else:
+        movie.rated_bad_users.add(user)
+        rated_bad=True
+        if movie.rated_good_users.filter(pk=user.pk).exists():
+            movie.rated_good_users.remove(user)
+            rated_good=False
+
+    response_data = {
+        'rated_bad': rated_bad,
+        'rated_bad_count': movie.rated_bad_users.count()
+    }
+    
+    return redirect('movies:detail', movie.pk)
         # return JsonResponse(response_data)
 
-    return redirect('accounts:login')
+    # return redirect('accounts:login')
     # return HttpResponse(status=401)
 
 

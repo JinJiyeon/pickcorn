@@ -40,11 +40,11 @@
             </li>
           </ul>
           <ul class="navbar-nav d-flex">
-            <a class="nav-link active" href="#" >{{ user.username }}님 환영합니다.</a>
+            <a class="nav-link active" href="#" >Welcome {{ user.username }}</a>
             {% comment %} <a class="nav-link active" href="#" id="logout">로그아웃</a> {% endcomment %}
             <form action="{% url 'accounts:logout' %}" method="POST">
                 {% csrf_token %}
-                <a class="nav-link active" href="#" id="logout">로그아웃</a>
+                <a class="nav-link active" href="#" id="logout">Logout</a>
             </form>
           </ul>
         {% else %}

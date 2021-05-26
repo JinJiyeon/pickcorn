@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -12,156 +13,119 @@
       <div class="card bg-transparent text-white">
         <div class="card-body">
           <h1 class="text-center card-title">{{ movie.title }}</h1>
-          {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
+
+          <!-- 평점 & 찜하기 버튼 한 블럭에-->
           <div class="d-flex justify-content-between">
             <p class="card-text">tmdb vote : {{ movie.weighted_vote|floatformat }}</p>
             <form action="{% url 'movies:like' movie.id %}" method="POST" class="like-form d-inline" data-movie-id="{{ movie.pk }}">
-                {% csrf_token %}
-                <button class="btn btn-outline-primary">
-                {% if request.user in movie.like_users.all %}
-                  <span style="color: Tomato;" class="like-color"><i class="fas fa-heart heart like-fill"></i></span>
-                {% else %}
-                  <span class="like-color"><i class="far fa-heart heart like-fill"></i></span>
-                {% endif %}
-                </button>
+              {% csrf_token %}
+              <button class="btn btn-outline-primary">
+              {% if request.user in movie.like_users.all %}
+                <span style="color: Tomato;" class="like-color"><i class="fas fa-heart heart like-fill"></i></span>
+              {% else %}
+                <span class="like-color"><i class="far fa-heart heart like-fill"></i></span>
+              {% endif %}
+              </button>
             </form>
           </div>
           
           <p class="card-text">overview : {{ movie.overview }}</p>
 
-
-          {% comment %} good or bad {% endcomment %}
-    <hr>
-      pickcorn vote
-      <div class="btn-group d-flex justify-content-center" role="group">
-        <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
-          {% csrf_token %}
-          {% if request.user in movie.rated_bad_users.all %}
-            <button class="btn btn-outline-primary"><i class="fas fa-thumbs-down"></i></span></button>
-          {% else %}
-            <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
-          {% endif %}
-        </form> 
-        <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
-          {% csrf_token %}
-          {% if request.user in movie.rated_good_users.all %}
-            <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-thumbs-up"></i></span></button>
-          {% else %}
-            <button class="btn btn-outline-primary"><i class="far fa-thumbs-up"></i></button>
-          {% endif %}
-        </form>  
-      </div>
-      <p>
-        {% if movie_score != 0 %}
-          <div class="progress" style="height: 30px;">
-            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ movie_score }}%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100">{{ movie_score }}% ({{ movie_votes }} votes)</div>
-          </div>
-        {% else %}
-          <div class="progress" style="height: 30px;">
-            <div class="progress-bar bg-secondary progress-bar-striped" role="progressbar" style="width: 100%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100" style="color: black;">{{ movie_score }}% ({{ movie_votes }} votes)</div>
-          </div>
-        {% endif %}
-      </p>
-    <hr>
-
-            {% comment %} <form action="{% url 'movies:rate_good' movie.id %}" method="POST" class="rated-good-form" data-movie-id="{{ movie.pk }}">
-              {% csrf_token %}
-                <button class="btn btn-outline-primary">
-                {% if request.user in movie.rated_good_users.all %}
-                  <span style="color: Tomato;" class="rated-good-color"><i class="fas fa-thumbs-up rated-good-fill"></i></span>
-                {% else %}
-                  <span class="rated-good-color"><i class="far fa-thumbs-up rated-good-fill"></i></span>
-                {% endif %}
-                </button>
-              </i></button>
-            </form> 
-
-            <form action="{% url 'movies:rate_bad' movie.id %}" method="POST" class="rated-bad-form" data-movie-id="{{ movie.pk }}">
-              {% csrf_token %}
-              <button class="btn btn-outline-primary rated-bad-colo">
-              {% if request.user in movie.rated_bad_users.all %}
-                <i class="fas fa-thumbs-down rated-bad-fill"></i>
-              {% else %}
-                <i class="far fa-thumbs-down rated-bad-fill"></i>
-              {% endif %}
-              </button> {% endcomment %}
-            </form>  
-            <br>
-          {% comment %} </div> {% endcomment %}
-
-    <div class="mx-3">
-    
-      <h4>Ongoing Reviews </h4>
-      <br>
-      {% if articles|length %}
-        <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
-          <div class="container">
-            {% for article in posts %}
-              <div class="card my-1 border-0">
-                <a href="{% url 'movies:article_detail' article.pk %}" class="text-decoration-none">
-                  <li class="list-group-item d-flex justify-content-between align-items-start bg-dark text-white ">
-                    {% if article.user in movie.rated_good_users.all %}
-                      <h2>😆</h2>
-                    {% elif article.user in movie.rated_bad_users.all %}
-                      <h2>🤔</h2>
-                    {% else %}
-                      <h2>🥚</h2>
-                    {% endif %}
-                    <div class="ms-2 me-auto">
-                      <div class="fw-bold">{{ article.title }}</div>
-                      작성자: {{ article.user }}
-                      ({{ article.created_at|timesince }} 전)
-                    </div>
-                    <span class="badge bg-primary rounded-pill"> {{ article.comment_set.count }}  comments </span>
-                  </li>
-                </a>
-              </div>
-            {% endfor %}
-          
-            <br>
-            <div class="">
-              {% if posts.has_previous %}
-              <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
-              <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
-              {% endif %}
-              <span>{{ posts.number }}</span>
-              <span>/</span>
-              <span>{{ posts.paginator.num_pages }}</span>
-              {% if posts.has_next %}
-              <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
-              <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
-              {% endif %}
-            </div>
-          </div>
-        </ol>
-      {% else %}
-        <p>아직 리뷰가 없어요..😥</p>
-      {% endif %}
-    </div>
           <hr>
-      {% comment %} views.py에 login_required 달았어요. {% endcomment %}
-      <div class="container">
-        <div class="row">
-          <div class="col-6">
-            <form action="{% url 'movies:article_create' movie.id %}">
-              <button class="btn btn-success d-block">Add Review 👉</button>
-            </form>
-          </div>
-          <div class="col-6">
-            <a href="{% url 'movies:index' %}" class="btn btn-primary d-block">Back</a>
-          </div>
-        </div>
-      </div>
-      
-      {% comment %} <div class="mx-3">
-        {% if request.user.is_authenticated %}
-          <form action="{% url 'movies:article_create' movie.id %}">
-            <button class="btn btn-success">리뷰 작성하기 ✏</button>
-          </form>
-        {% else %}
-          <a href="{% url 'accounts:login' %}">리뷰를 작성하려면 로그인하세요.</a>
-        {% endif %}
-      </div> {% endcomment %}
+            <!-- pickcorn vote -->
+            <div>
+              <img src="{% static 'pickcorn3.png' %}" width="40"> vote
+              <div class="btn-group d-flex justify-content-center" role="group">
+                <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
+                  {% csrf_token %}
+                  {% if request.user in movie.rated_bad_users.all %}
+                    <button class="btn btn-outline-primary"><i class="fas fa-thumbs-down"></i></span></button>
+                  {% else %}
+                    <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
+                  {% endif %}
+                </form> 
+                <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
+                  {% csrf_token %}
+                  {% if request.user in movie.rated_good_users.all %}
+                    <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-thumbs-up"></i></span></button>
+                  {% else %}
+                    <button class="btn btn-outline-primary"><i class="far fa-thumbs-up"></i></button>
+                  {% endif %}
+                </form>  
+              </div>
+              <p>
+                {% if movie_score != 0 %}
+                  <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ movie_score }}%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100">{{ movie_score }}% ({{ movie_votes }} votes)</div>
+                  </div>
+                {% else %}
+                  <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-secondary progress-bar-striped" role="progressbar" style="width: 100%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100" style="color: black;">{{ movie_score }}% ({{ movie_votes }} votes)</div>
+                  </div>
+                {% endif %}
+              </p>
+            </div>
+          <hr>
+            <div class="container">
+              <div class="row">
+                <div class="col-6">
+                  <h4>Ongoing Reviews </h4>
+                </div>
+                <div class="col-6 d-flex flex-row-reverse">
+                  <form action="{% url 'movies:article_create' movie.id %}">
+                    <button class="btn btn-success d-block">Add Review 👉</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <br>
+            {% if articles|length %}
+              <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
+                <div class="container">
+                  {% for article in posts %}
+                    <div class="card my-1 border-0">
+                      <a href="{% url 'movies:article_detail' article.pk %}" class="text-decoration-none">
+                        <li class="list-group-item d-flex justify-content-between align-items-start bg-dark text-white ">
+                          {% if article.user in movie.rated_good_users.all %}
+                            <h2>😆</h2>
+                          {% elif article.user in movie.rated_bad_users.all %}
+                            <h2>🤔</h2>
+                          {% else %}
+                            <h2>🥚</h2>
+                          {% endif %}
+                          <div class="ms-2 me-auto">
+                            <div class="fw-bold">{{ article.title }}</div>
+                            작성자: {{ article.user }}
+                            ({{ article.created_at|timesince }} 전)
+                          </div>
+                          <span class="badge bg-primary rounded-pill"> {{ article.comment_set.count }}  comments </span>
+                        </li>
+                      </a>
+                    </div>
+                  {% endfor %}
+                
+                  <br>
+                  <div class="">
+                    {% if posts.has_previous %}
+                    <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
+                    <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+                    {% endif %}
+                    <span>{{ posts.number }}</span>
+                    <span>/</span>
+                    <span>{{ posts.paginator.num_pages }}</span>
+                    {% if posts.has_next %}
+                    <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+                    <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
+                    {% endif %}
+                  </div>
+                </div>
+              </ol>
+            {% else %}
+              <p>아직 리뷰가 없어요..😥</p>
+            {% endif %}
+
+          <hr>
         </div>
       </div>
     </div>
@@ -173,13 +137,10 @@
     <div class="row gx-5">
       <h3 class="text-white">추천 영화</h3>
       {% for recom in movie.recommends.all %}
-
         <div class="card bg-transparent text-white col-12 col-md-4">
           <a href="{% url 'movies:detail' recom.pk %}">
             <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="card-img" alt="...">
             <div class="card-img-overlay">
-            {% comment %} 포스터에 떠서 {% endcomment %}
-              {% comment %} <h4 class="text-center"><span class="badge bg-secondary">{{ recom.title }}</span></h4> {% endcomment %}
               <div class="badge bg-primary text-wrap ">
                 평점: {{ recom.weighted_vote|floatformat }}
               </div>
@@ -189,9 +150,6 @@
       {% endfor %}
     </div>  
   </div>
-
-  
-
 
   <hr>
 
