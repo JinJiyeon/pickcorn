@@ -2,113 +2,117 @@
 
 {% block content %}
   
-  <style>
+  {% comment %} <style>
   body {
     background-image: url("https://image.tmdb.org/t/p/original/{{ movie.poster_path }}");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
   }
-  </style>
+  </style> {% endcomment %}
 
-  <div class="card text-center bg-white">
-    <div class="card-header">
-      <h2 class="text-center"> {{ article.title }}</h2>
-      <h5 class="text-center">{{ movie.title }}</h5>
-    </div>
-    <div class="card-body container px-6">
-      <div class="row align-items-center justify-content-end">
-        <div class="col text-center">
-          
-          {% if article.user in movie.rated_good_users.all %}
-            <h2> 😆🍿</h2>
-          {% elif article.user in movie.rated_bad_users.all %}
-            <h2> 🤔🗑</h2>
-          {% else %}
-            <h2> 🥚</h2>
-          {% endif %}
-          <p>작성자: <a href="{% url 'accounts:profile' article.user.pk %}" class="text-decoration-none"> {{ article.user }} </a></p>
-          <p>작성 시각: {{ article.created_at|date:"Y.m.d (D) P" }}</p>
-          <p>수정 시각: {{ article.updated_at }}</p>
-        </div>
-        <div class="col-8 text-center">
-          <br>
-          <h3>내용</h3> 
-          <br>
-          <h5>{{ article.content }}</h5>
-          <hr>
-          {% if request.user == article.user  %}
-          <div class="btn-group" role="group">
-            <form action="{% url 'movies:article_update' article.pk %}">
-              {% csrf_token %}
-              <button class="btn btn-success">수정하기</button>
-            </form>
-            <br>
-            <form action="{% url 'movies:article_delete' article.pk %}">
-              {% csrf_token %}
-              <button class="btn btn-danger">삭제하기</button>
-            </form>
-          </div>
-          {% endif %}
-        </div>
+  <div class="text-light mt-4">
+    <div class="card text-center bg-transparent border-warning">
+      <div class="card-header py-5">
+        <h2 class="text-center">{{ movie.title }}</h2>
+        <h4 class="text-center">{{ article.title }}</h4>
       </div>
       <hr>
-      <div class="comments">
-        <h4>댓글 목록</h4>
-        {% if comments|length %}
-          <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
-        {% endif %}
-        {% for comment in comments %}
-          <div class="card w-75 container">
-            <div class="card-body row justify-content-start">
-              <div class="col-11">
-                <h5 class="card-title">
-                  {% if article.user in movie.rated_good_users.all %}
-                    😆
-                  {% elif article.user in movie.rated_bad_users.all %}
-                    🤔
-                  {% else %}
-                    🥚
-                  {% endif %}
-                  <a href="{% url 'accounts:profile' comment.user.pk %}" class="text-decoration-none">{{ comment.user }}</a> 📣 {{ comment.content }}
-                </h5>
-                <span>({{ comment.created_at|timesince }} 전)</span>
-              </div>
-              <div class="col">
-                {% if request.user == comment.user  %}
-                <div class="card-body text-end">
-                  <form action="{% url 'movies:delete_comment' comment.pk %}" method="POST">
-                    {% csrf_token %}
-                    <button class="btn btn-outline-primary">삭제</button>
-                  </form>
-                </div>
-                {% endif %}
-              </div>
-            </div>     
+      <div class="card-body container px-4">
+        <div class="row align-items-center justify-content-end">
+          <div class="col text-center">
+            
+            {% if article.user in movie.rated_good_users.all %}
+              <h2> 😆🍿</h2>
+            {% elif article.user in movie.rated_bad_users.all %}
+              <h2> 🤔🗑</h2>
+            {% else %}
+              <h2> 🥚</h2>
+            {% endif %}
+            <p>작성자: <a href="{% url 'accounts:profile' article.user.pk %}" class="text-decoration-none"> {{ article.user }} </a></p>
+            <p>작성 시각: {{ article.created_at|date:"Y.m.d (D) P" }}</p>
+            <p>수정 시각: {{ article.updated_at }}</p>
           </div>
-          <br>
-        {% empty %}
-          <p><b>아직 댓글이 없어요..😥</b></p>
-        {% endfor %}
+          <div class="col-8 text-center">
+            <br>
+            <h3>내용</h3> 
+            <br>
+            <h5>{{ article.content }}</h5>
+            <hr>
+            {% if request.user == article.user  %}
+            <div class="btn-group" role="group">
+              <form action="{% url 'movies:article_update' article.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-success">수정하기</button>
+              </form>
+              <br>
+              <form action="{% url 'movies:article_delete' article.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-danger">삭제하기</button>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+        </div>
         <hr>
-        {% if request.user.is_authenticated %}
-          <form action="{% url 'movies:create_comment' article.pk %}" method="POST">
-            {% csrf_token %}
-            <p><h4>댓글 작성하기</h4></p>
-            {{ request.user }}: {{ comment_form.content }}
-            <button class="btn btn-outline-primary">등록</button>
-          </form>
-        {% else %}
-          <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
-        {% endif %}
-        <br>
-        <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">back</a>
-        <br>
+        <div class="comments">
+          <h4>댓글 목록</h4>
+          {% if comments|length %}
+            <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
+          {% endif %}
+          {% for comment in comments %}
+            <div class="card w-75 container bg-dark border-dark">
+              <div class="card-body row d-flex justify-content-between align-items-center">
+                <div class="col-10">
+                  <h5 class="card-title">
+                    {% if article.user in movie.rated_good_users.all %}
+                      😆
+                    {% elif article.user in movie.rated_bad_users.all %}
+                      🤔
+                    {% else %}
+                      🥚
+                    {% endif %}
+                    <a href="{% url 'accounts:profile' comment.user.pk %}" class="text-decoration-none">{{ comment.user }}</a> 📣 {{ comment.content }}
+                  </h5>
+                  <span>({{ comment.created_at|timesince }} 전)</span>
+                </div>
+                <div class="col-2">
+                  {% if request.user == comment.user  %}
+                  <span class="card-body text-end">
+                    <form action="{% url 'movies:delete_comment' comment.pk %}" method="POST">
+                      {% csrf_token %}
+                      <button class="btn btn-outline-primary">삭제</button>
+                    </form>
+                  </span>
+                  {% endif %}
+                </div>
+              </div>     
+            </div>
+            <br>
+          {% empty %}
+            <p><b>아직 댓글이 없어요..😥</b></p>
+          {% endfor %}
+          <hr>
+          {% if request.user.is_authenticated %}
+            <form action="{% url 'movies:create_comment' article.pk %}" method="POST">
+              {% csrf_token %}
+              <p><h4>댓글 작성하기</h4></p>
+              {{ request.user }}: {{ comment_form.content }}
+              <button class="btn btn-outline-primary">등록</button>
+            </form>
+          {% else %}
+            <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
+          {% endif %}
+          <br>
+          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">back</a>
+          <br>
+        </div>
+      </div>
+      <div class="card-footer text-muted">
+        {{ article.created_at|timesince }} 전에 등록됨
       </div>
     </div>
-    <div class="card-footer text-muted">
-      {{ article.created_at|timesince }} 전에 등록됨
-    </div>
   </div>
+  
   
 {% endblock  %}
