@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
+{% block css %}
+  <link rel="stylesheet" href="{% static 'profile.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<br>
-<br>
-<br>
 <br>
 <br>
 <br>
@@ -31,19 +32,20 @@
   {% endif %}
 
   <hr>
+  <br>
   {% comment %} 팔로잉, 팔로워 숫자 {% endcomment %}
 
-  <p>
-    <b>follower: </b>
+  <h5>
+    <b>🍕 follower : </b>
     <a href="{% url 'accounts:followers' person.pk %}">{{ person.followers.all|length }}</a>
-  </p>
+  </h5>
 
-  <p>
-    <b>following: </b>
+  <h5>
+    <b>🍔 following : </b>
     <a href="{% url 'accounts:followings' person.pk %}">{{ person.followings.all|length }}</a>
-  </p>
+  </h5>
 
-  
+  <br>
   <hr>
   {% comment %} 작성자의 팔로잉, 팔로워 숫자를 보여주고 유저의 이름을 모두 출력
 
@@ -65,23 +67,25 @@
 
   <hr> {% endcomment %}
 
+
 <div class="accordion" id="accordionExample">
   <!--   프로필의 유저가 작성한 모든 글의 제목 -->
   <div class="accordion-item">
-    <h2 class="accordion-header" id="headingOne">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-        <p><b>{{ person.username }}</b> created {{ person.article_set.all|length }} reviews</p>
+    <h2 class="accordion-header " id="headingOne">
+      <button class="accordion-button alert-info collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        <span><b>{{ person.username }}</b> 님이 작성한 리뷰</span>
+        <span class="badge mx-2"><b>{{ person.article_set.all|length }}</b>개</span>
       </button>
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <ul>
-        {% for article in person.article_set.all %}
-          <a href="{% url 'movies:article_detail' article.pk %}">
-            <li>{{ article.title }}</li>
-          </a>
-        {% endfor %}
-        </ul>
+        <li>
+          {% for article in person.article_set.all %}
+            <a class="text-decoration-none" href="{% url 'movies:article_detail' article.pk %}">
+              <p>{{ article.title }}</p>
+            </a>
+          {% endfor %}
+        </li>
       </div>
     </div>
   </div>
@@ -89,19 +93,20 @@
   <!--   프로필의 유저가 작성한 모든 댓글의 내용 -->
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        <p><b>{{ person.username }}</b> left {{ person.comment_set.all|length }} comments</p>
+      <button class="accordion-button alert-info collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        <span><b>{{ person.username }}</b> 님이 남긴 댓글</span>
+        <span class="badge mx-2"><b>{{ person.comment_set.all|length }}</b>개</span>
       </button>
     </h2>
     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <ul>
+        <li>
         {% for comment in person.comment_set.all %}
           <a href="{% url 'movies:article_detail' comment.article.pk %}">
-            <li>{{ comment.content }}</li>
+            <p>{{ comment.content }}</p>
           </a>
         {% endfor %}
-        </ul>
+        </li>
       </div>
     </div>
   </div>
@@ -109,31 +114,32 @@
   <!-- 따봉한 영화 -->
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingThree">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          <p><b>{{ person.username }}</b> likes {{ person.rated_good_movies.all|length }} movies</p>
+      <button class="accordion-button alert-info collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          <span><b>{{ person.username }}</b> 님이 좋아요 누른 영화</span>
+          <span class="badge mx-2"><b>{{ person.rated_good_movies.all|length }}</b>개</span>
       </button>
     </h2>
     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-        <ul>
+        <li>
         {% for good in person.rated_good_movies.all %}
-          <li>{{ good.title }}</li>
+          <p>{{ good.title }}</p>
           <a href="{% url 'movies:detail' good.pk %}">
             <img src="https://image.tmdb.org/t/p/original/{{ good.poster_path }}" alt="no photos yet" width="180">
           </a>
         {% endfor %}
-        </ul>
+        </li>
       </div>
     </div>
 
     <!--  찜한 영화와 숫자 -->
     <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-          <p><b>{{ person.username }}</b>'s playlist</p>
+      <button class="accordion-button alert-info collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          <span><b>{{ person.username }}</b> 님의 찜한 영화 리스트</span>
       </button>
     </h2>
-    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne" data-bs-parent="#panelsStayOpen-headingOne">
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <ul>
         {% for like in person.like_movies.all %}

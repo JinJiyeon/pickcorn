@@ -140,7 +140,7 @@ def index(request):
         followingslist_set = set(followingslist)
         followingslist = list(followingslist_set)
         if len(followingslist) >= random_num:
-            followingslist = random.sample(followingslist, random_num) 
+            followingslist = random.sample(followingslist, random_num)
 
         context = {
             'weighted_vote_movies': weighted_vote_movies,
