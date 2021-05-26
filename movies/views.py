@@ -223,10 +223,14 @@ def delete_comment(request, comment_pk):
     
     return redirect('movies:article_detail', article.pk)
 
-# @require_POST
+
+@require_http_methods(['GET', 'POST'])
 @login_required
 def like(request, movie_pk):
     # if request.user.is_authenticated:
+    if request.method == 'GET':
+        return redirect('movies:detail', movie_pk)
+
     movie = get_object_or_404(Movie, pk=movie_pk)
     user = request.user
 
