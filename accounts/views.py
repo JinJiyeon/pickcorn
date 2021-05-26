@@ -5,10 +5,10 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST, require_http_methods
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from .forms import CustomUserCreationForm
 from django.http import JsonResponse, HttpResponse
-
+from django.core.paginator import Paginator
 
 @require_http_methods(['GET', 'POST'])
 def signup(request):
@@ -61,11 +61,24 @@ def logout(request):
     auth_logout(request)
     return redirect('movies:index')
 
-
+@require_GET
 def profile(request, user_pk):
     person = get_object_or_404(get_user_model(), pk=user_pk)
+    rated_good_movies = person.rated_good_movies.all()
+    like_movies = person.like_movies.all()
+
+    paginator = Paginator(rated_good_movies, 3)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+    
+    like_paginator = Paginator(like_movies, 3)
+    like_page = request.GET.get('page')
+    like_posts = like_paginator.get_page(like_page)    
+
     context = {
         'person': person,
+        'posts': posts,
+        'like_posts': like_posts,
     }
     return render(request, 'accounts/profile.html', context)
 

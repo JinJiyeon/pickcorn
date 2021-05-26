@@ -28,7 +28,6 @@ class Movie(models.Model):
     rated_good_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_good_movies')
     rated_bad_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='rated_bad_movies')
 
-
 class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
