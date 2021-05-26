@@ -15,22 +15,22 @@
         <div class="card-body">
           <h1 class="text-center card-title">{{ movie.title }}</h1>
           {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
-          <p class="card-text">TMDB 평점 : {{ movie.vote_average }} ({{ movie.vote_count }} votes)</p>
+          <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
 
-          <p>pickcorn Score: {{ movie.rated_good_users.count }} / ({{ movie.rated_good_users.count }} + {{ movie.rated_bad_users.count }}) * 100</p>
-          
           <p class="card-text">overview : {{ movie.overview }}</p>
           {% comment %} good or bad {% endcomment %}
           평가하기: 
+
+
           <div class="btn-group" role="group">
-            <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
+            {% comment %} <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
               {% csrf_token %}
               {% if request.user in movie.rated_good_users.all %}
                 <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-thumbs-up"></i></span></button>
               {% else %}
                 <button class="btn btn-outline-primary"><i class="far fa-thumbs-up"></i></button>
               {% endif %}
-            </form> 
+            </form>  
           
             <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
               {% csrf_token %}
@@ -39,44 +39,109 @@
               {% else %}
                 <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
               {% endif %}
+            </form>  {% endcomment %}
+            
+
+            <form action="{% url 'movies:rate_good' movie.id %}" method="POST" class="rated-good-form" data-movie-id="{{ movie.pk }}">
+              {% csrf_token %}
+                <button class="btn btn-outline-primary">
+                {% if request.user in movie.rated_good_users.all %}
+                  <span style="color: Tomato;" class="rated-good-color"><i class="fas fa-thumbs-up rated-good-fill"></i></span>
+                {% else %}
+                  <span class="rated-good-color"><i class="far fa-thumbs-up rated-good-fill"></i></span>
+                {% endif %}
+                </button>
+              </i></button>
             </form> 
+
+            <form action="{% url 'movies:rate_bad' movie.id %}" method="POST" class="rated-bad-form" data-movie-id="{{ movie.pk }}">
+              {% csrf_token %}
+              <button class="btn btn-outline-primary rated-bad-colo">
+              {% if request.user in movie.rated_bad_users.all %}
+                <i class="fas fa-thumbs-down rated-bad-fill"></i>
+              {% else %}
+                <i class="far fa-thumbs-down rated-bad-fill"></i>
+              {% endif %}
+              </button>
+            </form>  
+            <br>
           </div>
+
+          <hr>
+          
+          <div>
+            pickcorn 추천: 
+            {% if movie_score != 0 %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ movie_score }}%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100">{{ movie_score }}% ({{ movie_votes }} votes)</div>
+              </div>
+            {% else %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-secondary progress-bar-striped" role="progressbar" style="width: 100%;" aria-valuenow="{{ movie_score }}" aria-valuemin="0" aria-valuemax="100" style="color: black;">{{ movie_score }}% ({{ movie_votes }} votes)</div>
+              </div>
+            {% endif %}
+          </div>
+
+
+
+           
+
             {% comment %} (찜) 버튼 {% endcomment %}
           <br>
           <p>
             
-            <form action="{% url 'movies:like' movie.id %}" method="POST">
+            <form action="{% url 'movies:like' movie.id %}" method="POST" class="like-form" data-movie-id="{{ movie.pk }}">
               {% csrf_token %}
               내 플레이리스트에 추가하기:
+              <button class="btn btn-outline-primary">
               {% if request.user in movie.like_users.all %}
-                <button class="btn btn-outline-primary"><span style="color: Tomato;"><i class="fas fa-heart heart"></i></span></button>
+                <span style="color: Tomato;" class="like-color"><i class="fas fa-heart heart like-fill"></i></span>
               {% else %}
-                <button class="btn btn-outline-primary"><i class="far fa-heart heart"></i></button>
+                <span class="like-color"><i class="far fa-heart heart like-fill"></i></span>
               {% endif %}
+              </button>
             </form>
-          </p>
+          </div>
           
-          <br>
-          <br>
+          <hr>
 
           <h4>Ongoing Reviews </h4>
+          <br>
           {% if articles|length %}
             <p><b>{{ articles|length }}개의 리뷰가 있습니다.</b></p>
-          {% endif %}
-          {% for article in articles %}
-            <div>
-              {{ article.user }} - {{ article.title }}
-              <a href="{% url 'movies:article_detail' article.pk %}">[Detail]</a>
-            </div>
-          {% empty %}
-            <p><b>리뷰가 없어요..</b></p>
-          {% endfor %}
 
+            <ol class="list-group list-group-numbered">
+              {% for article in articles %}
+
+              <a href="{% url 'movies:article_detail' article.pk %}" class="text-decoration-none">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                  {% if article.user in movie.rated_good_users.all %}
+                    <h2>😆🍿</h2>
+                  {% elif article.user in movie.rated_bad_users.all %}
+                    <h2>🤔🗑</h2>
+                  {% else %}
+                    <h2>🥚</h2>
+                  {% endif %}
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">{{ article.title }}</div>
+                    작성자: {{ article.user }}
+                    ({{ article.created_at|timesince }} 전)
+                  </div>
+                  <span class="badge bg-primary rounded-pill"> {{ article.comment_set.count }}  comments </span>
+                </li>
+              </a>
+              {% endfor %}
+            </ol>
+
+          {% else %}
+            <p><b>아직 리뷰가 없어요..😥</b></p>
+          {% endif %}
           <hr>
 
           {% if request.user.is_authenticated %}
-            리뷰 작성하기
-            <a href="{% url 'movies:article_create' movie.id %}">✏</a>
+            <form action="{% url 'movies:article_create' movie.id %}">
+              <button class="btn btn-success">리뷰 작성하기 ✏</button>
+            </form>
           {% else %}
             <a href="{% url 'accounts:login' %}">리뷰를 작성하려면 로그인하세요.</a>
           {% endif %}
@@ -92,18 +157,138 @@
   <hr>
 
   <h3>추천 영화</h3>
+
   <div class="row">
     <p>{{ message }}</p>
     {% for recom in movie.recommends.all %}
-      <div class="col-sm-4">
+
+      <div class="card bg-transparent text-white col-sm-4">
         <a href="{% url 'movies:detail' recom.pk %}">
-          <p>{{ recom.title }}</p>
-          <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="img-fluid" alt="아직 사진이 없습니다" width="auto">     
+          <img src="https://image.tmdb.org/t/p/w500/{{ recom.poster_path }}" class="card-img" alt="...">
+          <div class="card-img-overlay">
+            <h3 class="text-center"><span class="badge bg-secondary">{{ recom.title }}</span></h3>
+            <div class="badge bg-primary text-wrap" style="width: 8rem">
+              평점: {{ recom.weighted_vote|floatformat }}
+            </div>
+          </div>
         </a>
-      </div>    
+      </div>
     {% endfor %}
   </div>
 
+
+
   <hr>
 
+<script>
+  const rateGood = document.querySelector('.rated-good-form')
+  const rateBad = document.querySelector('.rated-bad-form')
+  const addPlaylist = document.querySelector('.like-form')
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+  rateGood.addEventListener('submit', event => {
+    event.preventDefault()  
+    const movieId = event.target.dataset.movieId
+    axios({
+      url: `/movies/${movieId}/rate_good/`,
+      method: 'post',
+      headers : {
+        'X-CSRFToken': csrfToken,   
+      },
+    })
+    .then(function (response) {
+      const { rated_good, rated_good_count } = response.data
+      const ratedGoodColor = document.querySelector(`.rated-good-color`)
+      const ratedGoodFill = document.querySelector(`.rated-good-fill`)
+      ratedGoodFill.classList.remove('fas', 'far')
+      ratedGoodColor.style.color = rated_good? 'Tomato' : ''
+      ratedGoodFill.className += rated_good? ' fas' : ' far'
+    })
+    .catch( function (error) {
+      switch (error.response.status) {
+        case 401: {
+          // 로그인 페이지로 보내준다
+          location.href = '/accounts/login/?next='+location.pathname
+          break
+        }
+        default: {
+          // 에러메세지를 경고창으로 표시한다
+          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+        }
+      }
+    })
+  })
+
+  rateBad.addEventListener('submit', event => {
+    event.preventDefault()  
+    const movieId = event.target.dataset.movieId
+    axios({
+      url: `/movies/${movieId}/rate_bad/`,
+      method: 'post',
+      headers : {
+        'X-CSRFToken': csrfToken,   
+      },
+    })
+    .then(function (response) {
+      const { rated_bad, rated_bad_count } = response.data
+      const ratedBadFill = document.querySelector(`.rated-bad-fill`)
+      ratedBadFill.classList.remove('fas', 'far')
+      ratedBadFill.className += rated_bad? ' fas' : ' far'
+    })
+    .catch( function (error) {
+      switch (error.response.status) {
+        case 401: {
+          // 로그인 페이지로 보내준다
+          location.href = '/accounts/login/?next='+location.pathname
+          break
+        }
+        default: {
+          // 에러메세지를 경고창으로 표시한다
+          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+        }
+      }
+    })
+  }) 
+
+  addPlaylist.addEventListener('submit', event => {
+    event.preventDefault()  
+    const movieId = event.target.dataset.movieId
+    axios({
+      url: `/movies/${movieId}/like/`,
+      method: 'post',
+      headers : {
+        'X-CSRFToken': csrfToken,   
+      },
+    })
+    .then(function (response) {
+      const { liked, count } = response.data
+      const likedColor = document.querySelector(`.like-color`)
+      const likedFill = document.querySelector(`.like-fill`)
+      likedFill.classList.remove('fas', 'far')
+      likedColor.style.color = liked? 'Tomato' : ''
+      likedFill.className += liked? ' fas' : ' far'
+    })
+    .catch( function (error) {
+      switch (error.response.status) {
+        case 401: {
+          // 로그인 페이지로 보내준다
+          location.href = '/accounts/login/?next='+location.pathname
+          break
+        }
+        default: {
+          // 에러메세지를 경고창으로 표시한다
+          alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+        }
+      }
+    
+        // parameter에 현재 Path의 정보를 심어줘야함
+        // 현재 path에 대한 정보를 next에 담는다
+        // 사용자를 로그인 페이지로 이동시킨다
+        // 로그인으로 이동시킬 때 next라는 파라미터가 붙는다
+        
+    })
+  }) 
+
+  
+</script>
 {% endblock %}

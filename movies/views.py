@@ -11,29 +11,18 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 import random
+from django.contrib.auth.decorators import login_required
 
-# , Comment, Article
-# from .serializers import (MovieSerializer, 
-#                         MovieListSerializer, 
-#                         CommentSerializer, 
-#                         CommentListSerializer, 
-#                         ArticleSerializer,
-#                         ArticleListSerializer,
-# )
-# Create your views here.
 
-def recommend(request, pk):
-    movie = get_object_or_404(Movie, id=pk)
-    data = serializers.serialize('json', [movie])
-    context = {
-        'data': data
-    }
-    return render(request, 'movies/recommend.html', context)
 
 @require_GET
 def index(request):
-    weighted_vote_movies = Movie.objects.order_by('-weighted_vote')[:5]
-    vote_movies = Movie.objects.order_by('-vote_count')[:5]
+    weighted_vote_movies = list(Movie.objects.order_by('-weighted_vote')[:30])
+    vote_movies = list(Movie.objects.order_by('-vote_count')[:30])
+
+    weighted_vote_movies = random.sample(weighted_vote_movies, 5)
+    vote_movies = random.sample(vote_movies, 5)
+    
     movies = list(Movie.objects.all())
     random_movies = random.sample(movies, 5)
     
@@ -56,7 +45,8 @@ def index(request):
             playlist_recom = list(playlist_recom_set)
 
             playlist_recom = random.sample(playlist_recom, 5)
-
+   
+        
         # 팔로우 한 사람의 플레이리스트 기반 추천
         followingslist = []
         for following in person.followings.all():
@@ -108,10 +98,19 @@ def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     articles = movie.article_set.all()
     
+    movie_good = movie.rated_good_users.count()
+    moive_bad = movie.rated_bad_users.count()
+    if movie_good or moive_bad:
+        movie_score = (movie_good / (movie_good+moive_bad)) * 100
+    else:
+        movie_score = 0
+    movie_votes = movie_good + moive_bad
+    
     context = {
         'movie': movie,
         'articles': articles,
-        
+        'movie_score': movie_score,
+        'movie_votes': movie_votes,
     }
     return render(request, 'movies/detail.html', context)
 
@@ -136,6 +135,7 @@ def article_create(request, movie_pk):
     return render(request, 'movies/article_create.html', context)
 
 
+@require_http_methods(['GET', 'POST'])
 def article_update(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     movie = get_object_or_404(Movie, pk=article.movie_id)
@@ -157,6 +157,7 @@ def article_update(request, article_pk):
         return render(request, 'movies/article_update.html', context)
 
     return redirect('movies:detail', movie.pk)
+
 
 
 def article_delete(request, article_pk):
@@ -199,7 +200,7 @@ def create_comment(request, article_pk):
     }
     return render(request, 'movies/detail.html', context)
 
-
+@require_POST
 def delete_comment(request, comment_pk):
     comment = get_object_or_404(Comment, pk=comment_pk)
     article = get_object_or_404(Article, pk=comment.article_id)
@@ -226,10 +227,14 @@ def like(request, movie_pk):
             'count': movie.like_users.count()
         }
         
-        return redirect('movies:detail', movie.pk)
-    return redirect('accounts:login')
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
+    # return redirect('accounts:login')
+    # request.GET.get('next') = 
+    return HttpResponse(status=401)
 
-
+@require_POST
+@login_required
 def rate_good(request, movie_pk):
     if request.user.is_authenticated:
         movie = get_object_or_404(Movie, pk=movie_pk)
@@ -250,9 +255,12 @@ def rate_good(request, movie_pk):
             'rated_good_count': movie.rated_good_users.count()
         }
         
-        return redirect('movies:detail', movie.pk)
-    return redirect('accounts:login')
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
+    # return redirect('accounts:login')
+    return HttpResponse(status=401)
 
+@require_POST
 def rate_bad(request, movie_pk):
     if request.user.is_authenticated:
         movie = get_object_or_404(Movie, pk=movie_pk)
@@ -273,71 +281,9 @@ def rate_bad(request, movie_pk):
             'rated_bad_count': movie.rated_bad_users.count()
         }
         
-        return redirect('movies:detail', movie.pk)
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
 
-    return redirect('accounts:login')
-
-# @api_view(['GET','POST'])
-# def movie_articles(request, movie_pk):
-#     movie = get_object_or_404(Movie, pk=movie_pk)
-#     if request.method == 'GET':
-#         article_list = movie.article_set.all()
-#         serializer = ArticleSerializer(article_list, many=True)
-#         return Response(serializer.data)
-#     else: # POST
-#         serializer = ArticleSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(movie=movie)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# @api_view(['GET','PUT','DELETE'])
-# def article_detail(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-#     if request.method == 'GET':
-#         serializer = ArticleSerializer(article)
-#         return Response(serializer.data)
-
-#     elif request.method == 'PUT':
-#         serializer = ArticleSerializer(article, data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response(serializer.data)
-    
-#     else:
-#         article.delete()
-#         response = {'pk':pk}
-#         return Response(response, status=status.HTTP_204_NO_CONTENT)
-
-
-# @api_view(['GET'])
-# def comments(request):
-# # Comment 목록을 가져온다, 없으면 404를 응답한다.
-#     comments_list = get_list_or_404(Comment)
-#     serializer = CommentListSerializer(comments_list, many=True)
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# def comment_detail(request, pk):
-#     comment = get_object_or_404(Comment, pk=pk)
-#     serializer = CommentSerializer(comment)
-#     return Response(serializer.data)
-    
-
-# @api_view(['GET', 'POST'])
-# def article_comments(request, article_pk):
-#     article = get_object_or_404(Article, pk=article_pk)
-#     if request.method == 'GET':
-#         comment_list = article.comment_set.all()
-#         serializer = CommentSerializer(comment_list, many=True)
-#         return Response(serializer.data)
-    
-#     else:
-#         serializer = CommentSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(article=article)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    
+    # return redirect('accounts:login')
+    return HttpResponse(status=401)
 
