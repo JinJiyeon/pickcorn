@@ -1,3 +1,13 @@
+.info {
+  color: #fd890d !important;
+}
+
+.alert-info {
+  color: white !important;
+  background-color: orange !important;
+  border-color: #fd890d !important;
+}
+
 .header {
   height: 50px;
   padding: 1rem;
@@ -14,15 +24,24 @@
   left: 0;
   right: 0;
   float: initial;
-  z-index: 1;
+  z-index: 10;
+  font-family: 'Lobster';
+  font-size: 25px;
 }
 
 body {
+  /* $theme-colors: (
+    "primary": $primary,
+    "danger": $danger
+  ); */
   background: #000000;
   /* background-color: #fff; */
   color: white;
+  font-family: 'Lobster';
 }
 
 .navbar-collapse{
   justify-content: space-between;
 }
+
+

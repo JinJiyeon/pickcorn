@@ -1,247 +1,143 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block css %}
-  <link rel="stylesheet" href="{% static 'index.css' %}">
-{% endblock %}
-
 {% block content %}
 
-  <h1 class="text-light">Movies</h1>
-  <hr>
-  <h2 class="mb-3 text-light">TOP 20</h2>
-  {% comment %} Carousel Test {% endcomment %}
-
-  <div class="carousel">
-    <div class="carouselbox">
-      {% comment %} 랜덤 데이터 들어갈 곳 {% endcomment %}
-    </div>
-
-    <a class="switchLeft sliderButton" onclick="sliderScrollLeft()">👈</a>
-    <a class="switchRight sliderButton" onclick="sliderScrollRight()">👉</a>
-  </div>
-
-  
-  {% if request.user.is_authenticated %}
-
-    {% if playlist_recom or followingslist %}
-
-      <h2 class="mb-3 text-light">User's playlist</h2>
-      <div class="container">
-        <div class="row g-4">
-          {% for movie in person.like_movies.all %}
-            <div class="col">
-              <div class="card">
-                <a href="{% url 'movies:detail' movie.pk %}">
-                  <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
-                </a>
-                <div class="card-body">
-                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                  <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
-          
+{% if request.user.is_authenticated %}
+    {% if playlist %}
+      <h2 class="mb-3">내가 찜한 영화 ʕ•ﻌ•ʔ</h2>
+        <div class="container">
+          <div class="row g-4">
+            {% for movie in playlist %}
+                <div class="col-4 col-md-2">
+                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
+                    <div class="card h-100">
+                      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
+                      <div class="card-body bg-dark text-white">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                      </div>
+                    </div>
+                  </a>
                 </div>
-              </div>
-            </div>
-          {% endfor %}
+            {% endfor %}  
+          </div>
         </div>
-      </div>
-
       <hr>
-
-      {% if playlist_recom %}
-      <h2 class="mb-3 text-light">Recommendations based on user's playlist</h2>
+      <h2 class="mb-3 text-light">찜한 목록과 비슷한 영화들이에요! (⸝⸝･ᴗ･⸝⸝)੭˒˒</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in playlist_recom %}
-              <div class="col">
-                <div class="card">
-                  <a href="{% url 'movies:detail' movie.pk %}">
-                    <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+                <div class="col-4 col-md-2">
+                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
+                    <div class="card h-100">
+                      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
+                      <div class="card-body bg-dark text-white">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                      </div>
+                    </div>
                   </a>
-                  <div class="card-body">
-                    <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-
-                    <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
-            
-                  </div>
                 </div>
-              </div>
             {% endfor %}
           </div>
         </div>
-      {% endif %}
+    {% else %}
+      <div class="alert alert-info" role="alert">
+        플레이리스트를 추가하고 맞춤영화를 추천받으세요!
+      </div>
+    {% endif %}
+    <hr>
 
-      <hr>
-
-      {% if followingslist %}
-      <h2 class="mb-3 text-light">User's following's list</h2>
+    {% if followingslist %}
+      <h2 class="mb-3 text-light">팔로우한 친구가 좋아하는 &amp; 좋아할 영화예요 (ฅ•ω•ฅ)♡</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in followingslist %}
-              <div class="col">
-                <div class="card">
-                  <a href="{% url 'movies:detail' movie.pk %}">
-                    <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
+                <div class="col-4 col-md-2">
+                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
+                    <div class="card h-100">
+                      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
+                      <div class="card-body bg-dark text-white">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                      </div>
+                    </div>
                   </a>
-                  <div class="card-body">
-                    <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-
-                    <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>                    
-            
-                  </div>
                 </div>
-              </div>
             {% endfor %}
           </div>
         </div>
-      {% endif %}
-
     {% else %}
-      <h2 class="mb-3 text-light">Top Rated</h2>
-      <div class="container">
-        <div class="row g-4">
-          {% for movie in weighted_vote_movies %}
-            <div class="col">
-              <div class="card">
-                <a href="{% url 'movies:detail' movie.pk %}">
-                  <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
-                </a>
-                <div class="card-body">
-                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                  <p class="card-text">평점 순 : {{ movie.weighted_vote }}</p>
-                  <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
+      <div class="alert alert-info" role="alert">
+        친구를 팔로우하고 맞춤영화를 추천받으세요!
       </div>
-      <hr>
-
-      <h2 class="mb-3 text-light">Most voted</h2>
-      <div class="container">
-        <div class="row g-4">
-          {% for movie in vote_movies %}
-            <div class="col">
-              <div class="card">
-                <a href="{% url 'movies:detail' movie.pk %}">
-                  <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
-                </a>
-                <div class="card-body">
-                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                  <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-                  <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      <hr>
     {% endif %}
+    <hr>
 
-  <hr>
+
   {% else %}
-  
+      <div class="alert alert-info" role="alert">
+        회원가입하고 맞춤영화를 추천받으세요!
+      </div>
   {% endif %}
 
-  <h2 class="mb-3 text-light">Random Movies</h2>
-      <div class="container">
-        <div class="row g-4">
-          {% for movie in random_movies %}
-            <div class="col">
-              <div class="card">
-                <a href="{% url 'movies:detail' movie.pk %}">
-                  <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
-                </a>
-                <div class="card-body">
-                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-                  <p class="card-text">투표수 : {{ movie.vote_count }}</p>
-                  <a href="{% url 'movies:detail' movie.pk %}">[detail]</a>
+    <h2 class="mb-3 text-light"><img src="{% static 'pickcorn3.png' %}" width="50">이 평가한 top 영화예요 </h2>
+        <div class="container">
+          <div class="row g-4">
+            {% for movie in weighted_vote_movies %}
+                <div class="col-4 col-md-2">
+                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
+                    <div class="card h-100">
+                      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
+                      <div class="card-body bg-dark text-white h-100">
+                        <h5 class="card-title overflow-auto">{{ movie.title }}</h5>
+                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                      </div>
+                    </div>
+                  </a>
                 </div>
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </div>
-      {% endfor %}
-    </div>
-  </div>
-  <hr>
-
-  <h2 class="mb-3">Top Rated</h2>
-  <div class="container">
-    <div class="row g-4">
-      {% for movie in weighted_vote_movies %}
-        <div class="col">
-          <div class="card">
-            <a href="{% url 'movies:detail' movie.pk %}">
-              <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster" style="height:10%">
-            </a>
-            <div class="card-body">
-              <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none"><h5 class="card-title">{{ movie.title }}</h5></a>
-              <p class="card-text">평점 순 : {{ movie.weighted_vote|floatformat }}</p>
-      
-            </div>
+    <hr>
+    <h2 class="mb-3 text-light">많은 사람들이 보았어요 °˖✧◝(⁰▿⁰)◜✧˖°</h2>
+        <div class="container">
+          <div class="row g-4">
+            {% for movie in vote_movies %}
+                <div class="col-4 col-md-2">
+                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
+                    <div class="card h-100">
+                      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
+                      <div class="card-body bg-dark text-white">
+                        <h5 class="card-title text-overflow: ellipsis">{{ movie.title }}</h5>
+                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+            {% endfor %}
           </div>
         </div>
-      {% endfor %}
-    </div>
-  </div>
-  <hr>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.js"></script>
-  <script>
-  const sliders = document.querySelector(".carouselbox")
-  var scrollPerClick;
-  var ImagePadding = 20
-
-  showMovieData();
-
-  var scrollAmount = 0;
-
-  function sliderScrollLeft() {
-    sliders.scrollTo({
-      top: 0,
-      left: (scrollAmount -= scrollPerClick),
-      behavior: "smooth"
-    });
-
-    if(scrollAmount < 0) {
-      scrollAmount = 0
-    }
-  }
-
-  function sliderScrollRight() {
-    if(scrollAmount <= sliders.scrollWidth - sliders.clientWidth) {
-      sliders.scrollTo({
-        top: 0,
-        left: (scrollAmount += scrollPerClick),
-        behavior: "smooth",
-      });
-    }
-  }
-
-  async function showMovieData() {
-    const api_key = "f8586fe7b28e1a11c068c8a933eadfd5";
-
-    var result = await axios.get(
-      "https://api.themoviedb.org/3/discover/movie?api_key=" +
-        api_key +
-        "&sort_by=popularity.desc"
-    );
-
-    result = result.data.results;
-    result.map(function (cur, index) {
-      sliders.insertAdjacentHTML(
-        "beforeend",
-        `<img class="img-${index} slider-img" src="https://image.tmdb.org/t/p/w185/${cur.poster_path}" />`
-      )
-    })
-
-    scrollPerClick = 400;
-  }
-
-  </script>
+    <hr>
+    <h2 class="mb-3 text-light">숨은 보석을 발굴해봅시다 ꒰( ˵¯͒ꇴ¯͒˵ )꒱</h2>
+        <div class="container">
+          <div class="row g-4">
+            {% for movie in random_movies %}
+                <div class="col-4 col-md-2">
+                  <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
+                    <div class="card h-100">
+                      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
+                      <div class="card-body bg-dark text-white">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+            {% endfor %}
+          </div>
+        </div>
   
-{% endblock %}
 
+{% endblock content %}

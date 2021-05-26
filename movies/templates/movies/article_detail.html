@@ -34,19 +34,18 @@
             <p>수정 시각: {{ article.updated_at }}</p>
           </div>
           <div class="col-8 text-center">
+            <h3 class="alert-info">내용</h3> 
             <br>
-            <h3>내용</h3> 
-            <br>
-            <h5>{{ article.content }}</h5>
+            <p>{{ article.content }}</p>
             <hr>
             {% if request.user == article.user  %}
             <div class="btn-group" role="group">
-              <form action="{% url 'movies:article_update' article.pk %}">
+              <form class="mx-4" action="{% url 'movies:article_update' article.pk %}">
                 {% csrf_token %}
                 <button class="btn btn-success">수정하기</button>
               </form>
               <br>
-              <form action="{% url 'movies:article_delete' article.pk %}">
+              <form class="mx-4" action="{% url 'movies:article_delete' article.pk %}">
                 {% csrf_token %}
                 <button class="btn btn-danger">삭제하기</button>
               </form>
@@ -146,13 +145,13 @@
               {% csrf_token %}
               <p><h4>댓글 작성하기</h4></p>
               {{ request.user }}: {{ comment_form.content }}
-              <button class="btn btn-outline-primary">등록</button>
+              <button class="btn btn-outline-info">등록</button>
             </form>
           {% else %}
             <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
           {% endif %}
           <br>
-          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">back</a>
+          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-lg alert-info">Back</a>
           <br>
         </div>
       </div>

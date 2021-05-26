@@ -5,7 +5,7 @@ app_name = 'movies'
 urlpatterns = [
     # 전체영화정보 제공 => index
     path('', views.index, name='index'),
-    path('tst', views.tst, name='tst'),
+    # path('tst/', views.tst, name='tst'),
     # 단일 영화정보 제공 => detail
     path('<int:movie_pk>/', views.detail, name='detail'),
 
