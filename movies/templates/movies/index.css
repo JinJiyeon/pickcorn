@@ -2,7 +2,7 @@
   color: aliceblue;
 }
 
-.carousel {
+{% comment %} .carousel {
   height: 350px;
   width: 100%;
   position: relative;
@@ -60,4 +60,4 @@
 .carouselbox img:hover {
   transform: scale(1.4);
   /* z-index: 5; */
-}
+} {% endcomment %}
