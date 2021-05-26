@@ -229,7 +229,8 @@ def delete_comment(request, comment_pk):
 def like(request, movie_pk):
     # if request.user.is_authenticated:
     if request.method == 'GET':
-        return redirect('movies:detail', movie_pk)
+        # return redirect('movies:detail', movie_pk)
+        return HttpResponse(status=401)
 
     movie = get_object_or_404(Movie, pk=movie_pk)
     user = request.user
@@ -246,12 +247,9 @@ def like(request, movie_pk):
         'count': movie.like_users.count()
     }
     
-    return redirect('movies:detail', movie.pk)
-    # return JsonResponse(response_data)
-    # return redirect('accounts:login')
-    # next_url = request.GET.get('next')
-    # return redirect(next_url)
-    # return HttpResponse(status=401)
+    # return redirect('movies:detail', movie.pk)
+    return JsonResponse(response_data)
+
 
 # @require_POST
 @login_required
