@@ -80,6 +80,7 @@ def index(request):
             'followingslist': followingslist,
             'playlist_recom': playlist_recom,
             'random_movies': random_movies,
+
             }
         else: 
             context = {
@@ -88,6 +89,7 @@ def index(request):
             'person': person,
             'playlist_recom': playlist_recom,
             'random_movies': random_movies,
+
             }
 
     else:
@@ -100,6 +102,75 @@ def index(request):
 
 
     return render(request, 'movies/index.html', context)
+
+@require_GET
+def tst(request):
+    random_num = 4
+    weighted_vote_movies = list(Movie.objects.order_by('-weighted_vote')[:30])
+    vote_movies = list(Movie.objects.order_by('-vote_count')[:30])
+
+    weighted_vote_movies = random.sample(weighted_vote_movies, random_num)
+    vote_movies = random.sample(vote_movies, random_num)
+    
+    movies = list(Movie.objects.all())
+    random_movies = random.sample(movies, random_num)
+    
+    # 로그인 한 회원일 시
+    if request.user.is_authenticated:
+        person = get_object_or_404(get_user_model(), pk=request.user.pk)
+        
+
+        # 유저의 플레이리스트 기반 추천
+        playlist = list(person.like_movies.all())
+        playlist_recom = []
+        for play in playlist:
+            playlist_recom += list(play.recommends.all())
+
+        # 중복 제거
+        playlist_recom_set = set(playlist_recom)
+        playlist_set = set(playlist)
+        playlist_recom = list(playlist_recom_set.difference(playlist_set))
+
+        if len(playlist_recom) >= random_num:
+            playlist_recom = random.sample(playlist_recom, random_num)
+
+
+   
+        
+        # 팔로우 한 사람의 플레이리스트 기반 추천
+        followingslist = []
+        for following in person.followings.all():
+            followingslist += list(following.like_movies.all())
+        
+        add_recom = []
+        for following in followingslist:
+            add_recom += list(following.recommends.all())
+        followingslist += add_recom
+            
+        followingslist_set = set(followingslist)
+        followingslist = list(followingslist_set)
+        followingslist = random.sample(followingslist, random_num) 
+        context = {
+            'weighted_vote_movies': weighted_vote_movies,
+            'vote_movies': vote_movies,
+            'person': person,
+            'followingslist': followingslist,
+            'playlist_recom': playlist_recom,
+            'random_movies': random_movies,
+            'playlist': playlist
+        }
+    
+
+    else:
+        context = {
+            'weighted_vote_movies': weighted_vote_movies,
+            'vote_movies': vote_movies,
+            'random_movies': random_movies,
+        }
+    
+
+
+    return render(request, 'movies/index2.html', context)
 
 
 @require_GET
