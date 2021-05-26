@@ -13,15 +13,6 @@ from django.contrib.auth import get_user_model
 import random
 from django.contrib.auth.decorators import login_required
 
-# , Comment, Article
-# from .serializers import (MovieSerializer, 
-#                         MovieListSerializer, 
-#                         CommentSerializer, 
-#                         CommentListSerializer, 
-#                         ArticleSerializer,
-#                         ArticleListSerializer,
-# )
-# Create your views here.
 
 
 @require_GET
@@ -295,68 +286,4 @@ def rate_bad(request, movie_pk):
 
     # return redirect('accounts:login')
     return HttpResponse(status=401)
-
-# @api_view(['GET','POST'])
-# def movie_articles(request, movie_pk):
-#     movie = get_object_or_404(Movie, pk=movie_pk)
-#     if request.method == 'GET':
-#         article_list = movie.article_set.all()
-#         serializer = ArticleSerializer(article_list, many=True)
-#         return Response(serializer.data)
-#     else: # POST
-#         serializer = ArticleSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(movie=movie)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# @api_view(['GET','PUT','DELETE'])
-# def article_detail(request, pk):
-#     article = get_object_or_404(Article, pk=pk)
-#     if request.method == 'GET':
-#         serializer = ArticleSerializer(article)
-#         return Response(serializer.data)
-
-#     elif request.method == 'PUT':
-#         serializer = ArticleSerializer(article, data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response(serializer.data)
-    
-#     else:
-#         article.delete()
-#         response = {'pk':pk}
-#         return Response(response, status=status.HTTP_204_NO_CONTENT)
-
-
-# @api_view(['GET'])
-# def comments(request):
-# # Comment 목록을 가져온다, 없으면 404를 응답한다.
-#     comments_list = get_list_or_404(Comment)
-#     serializer = CommentListSerializer(comments_list, many=True)
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# def comment_detail(request, pk):
-#     comment = get_object_or_404(Comment, pk=pk)
-#     serializer = CommentSerializer(comment)
-#     return Response(serializer.data)
-    
-
-# @api_view(['GET', 'POST'])
-# def article_comments(request, article_pk):
-#     article = get_object_or_404(Article, pk=article_pk)
-#     if request.method == 'GET':
-#         comment_list = article.comment_set.all()
-#         serializer = CommentSerializer(comment_list, many=True)
-#         return Response(serializer.data)
-    
-#     else:
-#         serializer = CommentSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(article=article)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    
 
