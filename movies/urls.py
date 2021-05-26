@@ -20,4 +20,6 @@ urlpatterns = [
     path('<int:movie_pk>/rate_good/', views.rate_good, name='rate_good'),
     path('<int:movie_pk>/rate_bad/', views.rate_bad, name='rate_bad'),
 
+    path('searchpage/', views.searchpage, name='searchpage'),
+    path('homepage/', views.homepage, name='homepage'),
 ]
