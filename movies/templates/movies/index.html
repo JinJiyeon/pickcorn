@@ -5,7 +5,7 @@
 
 {% if request.user.is_authenticated %}
     {% if playlist %}
-      <h2 class="mb-3">내가 찜한 영화 ʕ•ﻌ•ʔ</h2>
+      <h2 class="mb-3">You like 🎯</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in playlist %}
@@ -24,7 +24,7 @@
           </div>
         </div>
       <hr>
-      <h2 class="mb-3 text-light">찜한 목록과 비슷한 영화들이에요! (⸝⸝･ᴗ･⸝⸝)੭˒˒</h2>
+      <h2 class="mb-3 text-light">maybe you like 🍟</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in playlist_recom %}
@@ -50,7 +50,7 @@
     <hr>
 
     {% if followingslist %}
-      <h2 class="mb-3 text-light">팔로우한 친구가 좋아하는 &amp; 좋아할 영화예요 (ฅ•ω•ฅ)♡</h2>
+      <h2 class="mb-3 text-light">your followings maybe like 🍔</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in followingslist %}
@@ -82,7 +82,7 @@
       </div>
   {% endif %}
 
-    <h2 class="mb-3 text-light"><img src="{% static 'pickcorn3.png' %}" width="50">이 평가한 top 영화예요 </h2>
+    <h2 class="mb-3 text-light"><img src="{% static 'pickcorn3.png' %}" width="50"> top 20 🏆</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in weighted_vote_movies %}
@@ -101,7 +101,7 @@
           </div>
         </div>
     <hr>
-    <h2 class="mb-3 text-light">많은 사람들이 보았어요 °˖✧◝(⁰▿⁰)◜✧˖°</h2>
+    <h2 class="mb-3 text-light">many people see 👫</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in vote_movies %}
@@ -120,7 +120,7 @@
           </div>
         </div>
     <hr>
-    <h2 class="mb-3 text-light">숨은 보석을 발굴해봅시다 ꒰( ˵¯͒ꇴ¯͒˵ )꒱</h2>
+    <h2 class="mb-3 text-light">try new 🎁</h2>
         <div class="container">
           <div class="row g-4">
             {% for movie in random_movies %}

@@ -117,10 +117,17 @@ def index(request):
         for play in playlist:
             playlist_recom += list(play.recommends.all())
 
-        # 중복 제거
+        # 좋아요한 것
+        rated_good = list(person.rated_good_movies.all())
+        playlist += rated_good
+        for play in rated_good:
+            playlist_recom += list(play.recommends.all())
+        
+        rated_bad = list(person.rated_bad_movies.all())
+
+        # 중복 제거 + 싫어요한 영화는 제거 
         playlist_recom_set = set(playlist_recom)
-        playlist_set = set(playlist)
-        playlist_recom = list(playlist_recom_set.difference(playlist_set))
+        playlist_recom = list(playlist_recom_set.difference(playlist, rated_good, rated_bad))
 
         if len(playlist_recom) >= random_num:
             playlist_recom = random.sample(playlist_recom, random_num)
