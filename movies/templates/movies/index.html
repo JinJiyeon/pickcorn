@@ -9,13 +9,15 @@
         <div class="container">
           <div class="row g-4">
             {% for movie in playlist %}
-                <div class="col-4 col-md-2">
+                <div class="col-12 col-sm-4 col-lg-2">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white">
                         <h5 class="card-title">{{ movie.title }}</h5>
-                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                        <div class="badge bg-primary card-text">
+                          평점: {{ movie.weighted_vote|floatformat }}
+                        </div>
                       </div>
                     </div>
                   </a>
@@ -28,13 +30,16 @@
         <div class="container">
           <div class="row g-4">
             {% for movie in playlist_recom %}
-                <div class="col-4 col-md-2">
+                <div class="col-12 col-sm-4 col-lg-2">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white">
                         <h5 class="card-title">{{ movie.title }}</h5>
-                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                        {% comment %} <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p> {% endcomment %}
+                        <div class="badge bg-primary card-text">
+                          평점: {{ movie.weighted_vote|floatformat }}
+                        </div>
                       </div>
                     </div>
                   </a>
@@ -54,13 +59,16 @@
         <div class="container">
           <div class="row g-4">
             {% for movie in followingslist %}
-                <div class="col-4 col-md-2">
+                <div class="col-12 col-sm-4 col-lg-2">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white">
                         <h5 class="card-title">{{ movie.title }}</h5>
-                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                        {% comment %} <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p> {% endcomment %}
+                        <div class="badge bg-primary card-text">
+                          평점: {{ movie.weighted_vote|floatformat }}
+                        </div>
                       </div>
                     </div>
                   </a>
@@ -86,13 +94,16 @@
         <div class="container">
           <div class="row g-4">
             {% for movie in weighted_vote_movies %}
-                <div class="col-4 col-md-2">
+                <div class="col-12 col-sm-4 col-lg-2">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white h-100">
                         <h5 class="card-title overflow-auto">{{ movie.title }}</h5>
-                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                        {% comment %} <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p> {% endcomment %}
+                        <div class="badge bg-primary card-text">
+                          평점: {{ movie.weighted_vote|floatformat }}
+                        </div>
                       </div>
                     </div>
                   </a>
@@ -105,13 +116,16 @@
         <div class="container">
           <div class="row g-4">
             {% for movie in vote_movies %}
-                <div class="col-4 col-md-2">
+                <div class="col-12 col-sm-4 col-lg-2">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white">
                         <h5 class="card-title text-overflow: ellipsis">{{ movie.title }}</h5>
-                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                        {% comment %} <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p> {% endcomment %}
+                        <div class="badge bg-primary card-text">
+                          평점: {{ movie.weighted_vote|floatformat }}
+                        </div>
                       </div>
                     </div>
                   </a>
@@ -124,13 +138,16 @@
         <div class="container">
           <div class="row g-4">
             {% for movie in random_movies %}
-                <div class="col-4 col-md-2">
+                <div class="col-12 col-sm-4 col-lg-2">
                   <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white">
                         <h5 class="card-title">{{ movie.title }}</h5>
-                        <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p>
+                        {% comment %} <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p> {% endcomment %}
+                        <div class="badge bg-primary card-text">
+                          평점: {{ movie.weighted_vote|floatformat }}
+                        </div>
                       </div>
                     </div>
                   </a>

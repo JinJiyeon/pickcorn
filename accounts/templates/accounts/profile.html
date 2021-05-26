@@ -128,6 +128,7 @@
               <img src="https://image.tmdb.org/t/p/original/{{ good.poster_path }}" alt="no photos yet" width="400em">
             </a>
           </div>
+
         {% endfor %}
 
       </div>
@@ -151,6 +152,8 @@
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
       <button class="accordion-button collapsed alert-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
           <span><b>{{ person.username }}</b>'s playlist</span>
+          <span class="badge mx-2"><b>{{ like_posts|length }}</b>개</span>
+
       </button>
     </h2>
     <div id="collapseFour" class="accordion-collapse collapse container" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
