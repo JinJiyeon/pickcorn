@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 import random
 from django.contrib.auth.decorators import login_required
-
+from django.core.paginator import Paginator
 
 
 @require_GET
@@ -106,11 +106,16 @@ def detail(request, movie_pk):
         movie_score = 0
     movie_votes = movie_good + moive_bad
     
+    paginator = Paginator(articles, 3)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)
+
     context = {
         'movie': movie,
         'articles': articles,
         'movie_score': movie_score,
         'movie_votes': movie_votes,
+        'posts': posts,
     }
     return render(request, 'movies/detail.html', context)
 
@@ -227,11 +232,12 @@ def like(request, movie_pk):
             'count': movie.like_users.count()
         }
         
-        # return redirect('movies:detail', movie.pk)
-        return JsonResponse(response_data)
-    # return redirect('accounts:login')
-    # request.GET.get('next') = 
-    return HttpResponse(status=401)
+        return redirect('movies:detail', movie.pk)
+        # return JsonResponse(response_data)
+    return redirect('accounts:login')
+    # next_url = request.GET.get('next')
+    # return redirect(next_url)
+    # return HttpResponse(status=401)
 
 @require_POST
 @login_required
@@ -255,10 +261,10 @@ def rate_good(request, movie_pk):
             'rated_good_count': movie.rated_good_users.count()
         }
         
-        # return redirect('movies:detail', movie.pk)
-        return JsonResponse(response_data)
-    # return redirect('accounts:login')
-    return HttpResponse(status=401)
+        return redirect('movies:detail', movie.pk)
+        # return JsonResponse(response_data)
+    return redirect('accounts:login')
+    # return HttpResponse(status=401)
 
 @require_POST
 def rate_bad(request, movie_pk):
@@ -281,9 +287,9 @@ def rate_bad(request, movie_pk):
             'rated_bad_count': movie.rated_bad_users.count()
         }
         
-        # return redirect('movies:detail', movie.pk)
-        return JsonResponse(response_data)
+        return redirect('movies:detail', movie.pk)
+        # return JsonResponse(response_data)
 
-    # return redirect('accounts:login')
-    return HttpResponse(status=401)
+    return redirect('accounts:login')
+    # return HttpResponse(status=401)
 

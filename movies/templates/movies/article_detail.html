@@ -21,9 +21,9 @@
         <div class="col text-center">
           
           {% if article.user in movie.rated_good_users.all %}
-            <h2> 😆🍿</h2>
+            <h2> 😆</h2>
           {% elif article.user in movie.rated_bad_users.all %}
-            <h2> 🤔🗑</h2>
+            <h2> 🤔</h2>
           {% else %}
             <h2> 🥚</h2>
           {% endif %}
