@@ -46,6 +46,7 @@ def login(request):
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
+            print(request.GET.get('next'))
             return redirect(request.GET.get('next') or 'movies:index')
     else:
         form = AuthenticationForm()
