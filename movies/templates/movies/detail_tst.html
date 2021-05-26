@@ -17,7 +17,7 @@
           <!-- 평점 & 찜하기 버튼 한 블럭에-->
           <div class="d-flex justify-content-between">
             <p class="card-text">tmdb vote : {{ movie.weighted_vote|floatformat }}</p>
-            <form action="{% url 'movies:like' movie.id %}" method="POST" class="d-inline" id="like-form" data-movie-id="{{ movie.pk }}">
+            <form action="{% url 'movies:like' movie.id %}" method="POST" class="d-inline" id="like-form">
               {% csrf_token %}
               <button class="btn btn-outline-primary">
               {% if request.user in movie.like_users.all %}
@@ -156,7 +156,7 @@
 <script>
   const likeForm = document.querySelector('#like-form')
   let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
-  
+
   console.log('선택됨')
 
   likeForm.addEventListener('submit', event => {
@@ -167,23 +167,16 @@
 
     axios({
       url: `/movies/${movieId}/like/`,
-      method: 'post',
       headers : {
         'X-CSRFToken': csrfToken,       
       },
     })
     .then( function ( response ) {
-      const { liked, count } = response.data
-      const likedColor = document.querySelector(`.like-color`)
-      const likedFill = document.querySelector(`.like-fill`)
-      likedFill.classList.remove('fas', 'far')
-      likedColor.style.color = liked? 'Tomato' : ''
-      likedFill.className += liked? ' fas' : ' far'
+      console.log(response)
     })
     .catch( function (error) {
       switch (error.response.status) {
         case 401: {
-          console.log(error)
           location.href = `/accounts/login/?next=/movies/${movieId}/`
           break
         }

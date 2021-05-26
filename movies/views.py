@@ -224,37 +224,45 @@ def delete_comment(request, comment_pk):
     return redirect('movies:article_detail', article.pk)
 
 
+
+
+
+# ajax용. login_required 달면 안됨..!!!!
+@require_http_methods(['GET', 'POST'])
+def like(request, movie_pk):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            # return redirect('movies:detail', movie_pk)
+            return HttpResponse(status=401)
+
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        user = request.user
+
+        if movie.like_users.filter(pk=user.pk).exists():
+            movie.like_users.remove(user)
+            liked=False
+        else:
+            movie.like_users.add(user)
+            liked=True
+
+        response_data = {
+            'liked': liked,
+            'count': movie.like_users.count()
+        }
+        
+        # return redirect('movies:detail', movie.pk)
+        return JsonResponse(response_data)
+    return HttpResponse(status=401)
+
+
 @require_http_methods(['GET', 'POST'])
 @login_required
-def like(request, movie_pk):
+def rate_good(request, movie_pk):
     # if request.user.is_authenticated:
     if request.method == 'GET':
         # return redirect('movies:detail', movie_pk)
         return HttpResponse(status=401)
 
-    movie = get_object_or_404(Movie, pk=movie_pk)
-    user = request.user
-
-    if movie.like_users.filter(pk=user.pk).exists():
-        movie.like_users.remove(user)
-        liked=False
-    else:
-        movie.like_users.add(user)
-        liked=True
-
-    response_data = {
-        'liked': liked,
-        'count': movie.like_users.count()
-    }
-    
-    # return redirect('movies:detail', movie.pk)
-    return JsonResponse(response_data)
-
-
-# @require_POST
-@login_required
-def rate_good(request, movie_pk):
-    # if request.user.is_authenticated:
     movie = get_object_or_404(Movie, pk=movie_pk)
     user = request.user
 
