@@ -15,9 +15,9 @@
   <ul>
     {% comment %} 팔로우 유저들의 프로필로 이동 {% endcomment %}
     {% for follower in person.followers.all  %}
-      <li>
+      <h4>
         <a href="{% url 'accounts:profile' follower.pk %}">{{ follower.username|title }}</a>
-      </li>
+      </h4> 
     {% endfor %}
   </ul>
 {% comment %} follower가 없을 시 {% endcomment %}
