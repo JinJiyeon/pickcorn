@@ -132,12 +132,6 @@
               </div>
             </a>
           </div>
-          {% comment %} <p>{{ good.title }}</p> {% endcomment %}
-          {% comment %} <div class="card bg-transparent my-2 col-12 col-lg-6 col-xxl-4 border-0">
-            <a href="{% url 'movies:detail' good.pk %}">
-              <img src="https://image.tmdb.org/t/p/original/{{ good.poster_path }}" alt="no photos yet" width="400em">
-            </a>
-          </div> {% endcomment %}
 
         {% endfor %}
 
@@ -145,13 +139,13 @@
       <div class="">
         {% if posts.has_previous %}
         {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
-        <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+        <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
         {% endif %}
         <span>{{ posts.number }}</span>
         <span>/</span>
         <span>{{ posts.paginator.num_pages }}</span>
         {% if posts.has_next %}
-        <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+        <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning">next</button></a>
         {% comment %} <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
         {% endif %}
       </div>
@@ -162,7 +156,7 @@
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
       <button class="accordion-button collapsed alert-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
           <span><b>{{ person.username }}</b>'s playlist</span>
-          <span class="badge mx-2"><b>{{ like_posts|length }}</b>개</span>
+          <span class="badge mx-2"><b>{{ person.like_movies.all|length }}</b>개</span>
 
       </button>
     </h2>
@@ -180,23 +174,17 @@
             </a>
           </div>
         {% endfor %}
-        {% comment %} <div class="card bg-transparent my-2 col-12 col-lg-6 col-xxl-4 border-0">
-          <a href="{% url 'movies:detail' like.pk %}">
-            <img src="https://image.tmdb.org/t/p/original/{{ like.poster_path }}" alt="no photos yet" width="400em">
-          </a>
-        </div> 
-        {% endfor %} {% endcomment %}}
         
         <div class="">
           {% if like_posts.has_previous %}
           {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
-          <a href="?page={{ like_posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+          <a href="?like_page={{ like_posts.previous_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
           {% endif %}
           <span>{{ like_posts.number }}</span>
           <span>/</span>
           <span>{{ like_posts.paginator.num_pages }}</span>
           {% if like_posts.has_next %}
-          <a href="?page={{ like_posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+          <a href="?like_page={{ like_posts.next_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">next</button></a>
           {% comment %} <a href="?page={{ like_posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
           {% endif %}
         </div>
