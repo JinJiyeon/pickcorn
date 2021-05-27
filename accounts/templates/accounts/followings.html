@@ -11,7 +11,7 @@
 <hr>
 
 {% comment %} following하는 유저가 있다면 {% endcomment %}
-{% if following|length %}
+{% if person.followings.all|length %}
   <ul>   
     {% comment %} following하는 유저들의 프로필로 이동 {% endcomment %}
     {% for following in person.followings.all  %}
@@ -25,5 +25,8 @@
   <p>아직 following이 없습니다.</p>
 {% endif %}
 
+<br>
+<a href="{% url 'accounts:profile' person.pk %}" class="btn btn-lg alert-info">Back</a>
+<br>
 
 {% endblock content %}
