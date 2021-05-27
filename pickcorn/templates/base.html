@@ -15,15 +15,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Jura:wght@600&family=Lobster&family=Noto+Sans+KR&display=swap" rel="stylesheet">
 
-
   {% block css %}{% endblock %}
 </head>
+
 <body>
 {% block nav %}{% endblock nav %}
 <div class="header">
-  {% comment %} <nav class="navbar navbar-expand-lg navbar-dark sticky-top fixed-top"> {% endcomment %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-warning d-flex justify-content-between align-items-center px-3 p-3 fixed-top">
+  {% comment %} 
+    👉 navbar-dark : 글자 색을 흰색으로
+    👉 fixed-top : 스크롤을 내려도 맨 위에 위치
+  {% endcomment %}
     <div class="container-fluid">
+
+      {% comment %} 👉 로고 이미지 삽입 {% endcomment %}
       <a class="navbar-brand p-0" href="{% url 'movies:index' %}"><img src="{% static 'pickcorn3.png' %}" alt="" width="60"></a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,18 +47,30 @@
               <a class="nav-link active" href="{% url 'accounts:profile' user.pk %}">My Page</a>
             </li>
           </ul>
+
           <ul class="navbar-nav d-flex">
             <a class="nav-link active" href="#" >Welcome {{ user.username }}</a>
-            {% comment %} <a class="nav-link active" href="#" id="logout">로그아웃</a> {% endcomment %}
+            {% comment %}
+             👉 <a class="nav-link active" href="#" id="logout">로그아웃</a>  이렇게 말고
+             아래와 같이 form을 사용하면 a태그 버튼이 아니라 navbar 다른 요소들처럼 나온다.
+            {% endcomment %}
             <form action="{% url 'accounts:logout' %}" method="POST" id="logoutForm">
                 {% csrf_token %}
                 <a class="nav-link active logout" href="#" onclick="document.getElementById('logoutForm').submit()">Logout</a>
             </form>
           </ul>
+          {% comment %} 
+            👉 ul 태그를 두 번 넣은 이유 : justify-content-between 으로 양쪽으로 갈라놓으려고!
+          {% endcomment %}
+            
         {% else %}
           <ul class="navbar-nav">
             <p></p>
           </ul>
+          {% comment %} 
+            👉 여기서도 양쪽으로 갈라놓기 위해서 비어있는 p태그 삽입함
+          {% endcomment %}
+          
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'accounts:signup' %}">Sign in</a>

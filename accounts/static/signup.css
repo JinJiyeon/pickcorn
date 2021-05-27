@@ -11,11 +11,6 @@ body {
   background-color: #000000;
 }
 
-/* .img-main {
-  display: flex;
-  align-items: center;
-} */
-
 .form-signin {
   width: 100%;
   max-width: 450px;
@@ -26,6 +21,8 @@ body {
 .form-signin .form-floating:focus-within {
   z-index: 2;
 }
+/* 👉 z-index : 레이어를 주는 것. 만약 5라는 값을 준다면 레이어가 5개 쌓임 */
+/* 👉 배치를 앞쪽으로 나올 수 있게 조정하는 기능 */
 
 .form-signin button[type="submit"] {
   margin-top: 5px;

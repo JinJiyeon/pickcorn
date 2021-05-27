@@ -11,6 +11,8 @@ from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator
 
 
+
+# 회원가입
 @require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.user.is_authenticated:
@@ -20,11 +22,16 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             '''
+            # 👉 회원가입 / 로그인 페이지를 bootstrap 외부 템플릿으로 이용했기 때문에 기존 코드와 방식이 다름
             user = form.save()    
             '''
             form.save()
             username = form.cleaned_data.get('username')
+            # 👉사용자가 정한 아이디(username)
+
             raw_password = form.cleaned_data.get('password1')
+            # 👉 사용자가 정한 비밀번호(password1) / password2 : 비밀번호 확인
+
             user = authenticate(username=username, password=raw_password)
             auth_login(request, user)
             # return redirect('movies:index')
@@ -38,6 +45,8 @@ def signup(request):
     return render(request, 'accounts/signup.html', context)
 
 
+
+# 로그인
 @require_http_methods(['GET', 'POST'])
 def login(request):
     if request.user.is_authenticated:
@@ -57,6 +66,8 @@ def login(request):
     return render(request, 'accounts/login.html', context)
 
 
+
+# 로그아웃
 @require_POST
 def logout(request):
     auth_logout(request)
