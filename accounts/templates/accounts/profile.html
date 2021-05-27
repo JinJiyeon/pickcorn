@@ -13,7 +13,7 @@
 <!--페이지 타이틀-->
 
 <h1>{{ person.username|title }}'s profile</h1>
-
+<br>
 <!--팔로우 언팔로우 버튼 구현-->
 
 <!-- 자기가 자기는 팔로우 못함-->
@@ -22,10 +22,10 @@
     {% csrf_token %}
     <!--기존팔로워면 언팔가능-->
     {% if request.user in person.followers.all %}
-    <button>Unfollow</button>
+    <button class="btn btn-secondary d-block like-btn">Unfollow</button>
     <!-- 아니면 팔로우가능-->
     {% else %}
-    <button>Follow</button>
+    <button class="btn btn-success d-block like-btn">Follow</button>
     {% endif %}
   </form>
 {% endif %}
