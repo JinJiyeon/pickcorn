@@ -10,6 +10,7 @@ from .forms import CustomUserCreationForm
 from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator
 
+
 @require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.user.is_authenticated:
@@ -61,18 +62,19 @@ def logout(request):
     auth_logout(request)
     return redirect('movies:index')
 
+
 @require_GET
 def profile(request, user_pk):
     person = get_object_or_404(get_user_model(), pk=user_pk)
     rated_good_movies = person.rated_good_movies.all()
     like_movies = person.like_movies.all()
 
-    paginator = Paginator(rated_good_movies, 3)
+    paginator = Paginator(rated_good_movies, 6)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
     
-    like_paginator = Paginator(like_movies, 12)
-    like_page = request.GET.get('page')
+    like_paginator = Paginator(like_movies, 6)
+    like_page = request.GET.get('like_page')
     like_posts = like_paginator.get_page(like_page)    
 
     context = {

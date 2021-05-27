@@ -318,7 +318,6 @@ def homepage(request):
 def searchpage(request):
     search = request.GET['query']
     movies = Movie.objects.filter(title__icontains=search).order_by('-weighted_vote')
-
     users = User.objects.filter(username__icontains=search)
 
     paginator = Paginator(movies, 30)
@@ -326,7 +325,7 @@ def searchpage(request):
     posts = paginator.get_page(page)
 
     user_paginator = Paginator(users, 30)
-    user_page = request.GET.get('page')
+    user_page = request.GET.get('user_page')
     user_posts = user_paginator.get_page(user_page)
 
     context = {
@@ -336,4 +335,5 @@ def searchpage(request):
         'posts': posts,
         'user_posts': user_posts,
     }
+
     return render(request, 'movies/searchpage.html', context)

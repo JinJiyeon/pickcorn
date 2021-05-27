@@ -99,7 +99,7 @@
                     <div class="card h-100">
                       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
                       <div class="card-body bg-dark text-white h-100">
-                        <h5 class="card-title overflow-auto">{{ movie.title }}</h5>
+                        <h5 class="card-title text-overflow: ellipsis">{{ movie.title }}</h5>
                         {% comment %} <p class="card-text">평점 : {{ movie.weighted_vote|floatformat }}</p> {% endcomment %}
                         <div class="badge bg-primary card-text">
                           평점: {{ movie.weighted_vote|floatformat }}
