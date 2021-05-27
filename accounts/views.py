@@ -81,6 +81,7 @@ def profile(request, user_pk):
         'person': person,
         'posts': posts,
         'like_posts': like_posts,
+        'page':like_page
     }
     return render(request, 'accounts/profile.html', context)
 

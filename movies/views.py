@@ -30,7 +30,6 @@ def index(request):
     # 로그인 한 회원일 시
     if request.user.is_authenticated:
         person = get_object_or_404(get_user_model(), pk=request.user.pk)
-        
 
         # 유저의 플레이리스트 기반 추천
         playlist = list(person.like_movies.all())
@@ -53,10 +52,9 @@ def index(request):
 
         if len(playlist_recom) >= random_num:
             playlist_recom = random.sample(playlist_recom, random_num)
+        if len(playlist) >= random_num:
+            playlist = random.sample(playlist, random_num)
 
-
-   
-        
         # 팔로우 한 사람의 플레이리스트 기반 추천
         followingslist = []
         for following in person.followings.all():
@@ -81,7 +79,6 @@ def index(request):
             'random_movies': random_movies,
             'playlist': playlist
         }
-    
 
     else:
         context = {
@@ -89,8 +86,6 @@ def index(request):
             'vote_movies': vote_movies,
             'random_movies': random_movies,
         }
-    
-
 
     return render(request, 'movies/index.html', context)
 
@@ -122,10 +117,12 @@ def detail(request, movie_pk):
     return render(request, 'movies/detail.html', context)
 
 
-@require_http_methods(['GET', 'POST'])
+# 로그인한 유저만 create 할 수 있다
 @login_required
+@require_http_methods(['GET', 'POST'])
 def article_create(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
+    # form에 작성한 내용, db에 저장
     if request.method == 'POST':
         form = ArticleForm(request.POST) 
         if form.is_valid():
@@ -134,6 +131,7 @@ def article_create(request, movie_pk):
             article.movie = movie
             article.save()
             return redirect('movies:detail', movie.pk)
+    # form에 입력 시작
     else:
         form = ArticleForm()
     context = {
@@ -143,11 +141,14 @@ def article_create(request, movie_pk):
     return render(request, 'movies/article_create.html', context)
 
 
+@login_required
 @require_http_methods(['GET', 'POST'])
 def article_update(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     movie = get_object_or_404(Movie, pk=article.movie_id)
+    # 자기자신만 업데이트할 수 있다.
     if request.user == article.user:
+        # 수정한 내용을 db에 저장한다
         if request.method == 'POST':
             form = ArticleForm(request.POST, instance=article)
             if form.is_valid():
@@ -156,6 +157,7 @@ def article_update(request, article_pk):
                 article.movie = movie
                 article.save()
                 return redirect('movies:article_detail', article.pk)
+        # 수정을 시작한다
         else:
             form = ArticleForm(instance = article)
         context = {
@@ -163,16 +165,18 @@ def article_update(request, article_pk):
             'movie': movie,
         }
         return render(request, 'movies/article_update.html', context)
-
+    # 아니라면 detail 페이지로 돌려보낸다
     return redirect('movies:detail', movie.pk)
 
 
-
+# login_required는 GET이 허용될 때만 쓸 수 있다
+@require_POST
 def article_delete(request, article_pk):
-    article = get_object_or_404(Article, pk=article_pk)
-    movie = get_object_or_404(Movie, pk=article.movie_id)
-    if request.user == article.user:
-        article.delete()
+    if request.user.is_authenticated:
+        article = get_object_or_404(Article, pk=article_pk)
+        movie = get_object_or_404(Movie, pk=article.movie_id)
+        if request.user == article.user:
+            article.delete()
     return redirect('movies:detail', movie.pk)
 
 
@@ -214,6 +218,7 @@ def create_comment(request, article_pk):
     }
     return render(request, 'movies/detail.html', context)
 
+
 @require_POST
 def delete_comment(request, comment_pk):
     comment = get_object_or_404(Comment, pk=comment_pk)
@@ -224,48 +229,41 @@ def delete_comment(request, comment_pk):
     return redirect('movies:article_detail', article.pk)
 
 
-
-
-
-# ajax용. login_required 달면 안됨..!!!!
-@require_http_methods(['GET', 'POST'])
+# ajax로 처리함. POST만 허용하므로 login_required 달면 안됨.
+@require_http_methods(['POST'])
 def like(request, movie_pk):
     if request.user.is_authenticated:
-        if request.method == 'GET':
-            # return redirect('movies:detail', movie_pk)
-            return HttpResponse(status=401)
+        if request.method == 'POST':
+            movie = get_object_or_404(Movie, pk=movie_pk)
+            user = request.user
 
-        movie = get_object_or_404(Movie, pk=movie_pk)
-        user = request.user
+            if movie.like_users.filter(pk=user.pk).exists():
+                movie.like_users.remove(user)
+                liked=False
+            else:
+                movie.like_users.add(user)
+                liked=True
 
-        if movie.like_users.filter(pk=user.pk).exists():
-            movie.like_users.remove(user)
-            liked=False
-        else:
-            movie.like_users.add(user)
-            liked=True
-
-        response_data = {
-            'liked': liked,
-            'count': movie.like_users.count()
-        }
-        
-        # return redirect('movies:detail', movie.pk)
-        return JsonResponse(response_data)
+            response_data = {
+                'liked': liked,
+                'count': movie.like_users.count()
+            }
+            return JsonResponse(response_data)
+    # 로그인하지 않은 경우
     return HttpResponse(status=401)
 
 
-@require_http_methods(['GET', 'POST'])
 @login_required
+@require_http_methods(['GET', 'POST'])
 def rate_good(request, movie_pk):
-    # if request.user.is_authenticated:
+    # 로그인 후에 GET.next로 들어온 경우
     if request.method == 'GET':
-        # return redirect('movies:detail', movie_pk)
-        return HttpResponse(status=401)
+        return redirect('movies:detail', movie_pk)
 
+    # 로그인 & POST로 들어온 경우
     movie = get_object_or_404(Movie, pk=movie_pk)
     user = request.user
-
+    # 좋아요를 키면 싫어요를 꺼준다
     if movie.rated_good_users.filter(pk=user.pk).exists():
         movie.rated_good_users.remove(user)
         rated_good=False
@@ -275,21 +273,22 @@ def rate_good(request, movie_pk):
         if movie.rated_bad_users.filter(pk=user.pk).exists():
             movie.rated_bad_users.remove(user)
             rated_bad=False
-
+    # 삭제해도 무방
     response_data = {
         'rated_good': rated_good,
         'rated_good_count': movie.rated_good_users.count()
     }
 
     return redirect('movies:detail', movie.pk)
-    # return JsonResponse(response_data)
-    # return redirect('accounts:login')
-    # return HttpResponse(status=401)
 
-# @require_POST
+
 @login_required
+@require_http_methods(['GET', 'POST'])
 def rate_bad(request, movie_pk):
-    # if request.user.is_authenticated:
+    # 로그인 후에 GET.next로 들어온 경우
+    if request.method == 'GET':
+        return redirect('movies:detail', movie_pk)
+    # 로그인 & POST로 들어온 경우
     movie = get_object_or_404(Movie, pk=movie_pk)
     user = request.user
 
@@ -302,21 +301,19 @@ def rate_bad(request, movie_pk):
         if movie.rated_good_users.filter(pk=user.pk).exists():
             movie.rated_good_users.remove(user)
             rated_good=False
-
+    # 삭제해도 무방
     response_data = {
         'rated_bad': rated_bad,
         'rated_bad_count': movie.rated_bad_users.count()
     }
     
     return redirect('movies:detail', movie.pk)
-        # return JsonResponse(response_data)
 
-    # return redirect('accounts:login')
-    # return HttpResponse(status=401)
 
 
 def homepage(request):
     return render(request, 'movies/homepage.html')
+
 
 def searchpage(request):
     search = request.GET['query']

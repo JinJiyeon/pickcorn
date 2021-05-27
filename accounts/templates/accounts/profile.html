@@ -153,48 +153,42 @@
 
     <!--  찜한 영화와 숫자 -->
     <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button collapsed alert-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-          <span><b>{{ person.username }}</b>'s playlist</span>
-          <span class="badge mx-2"><b>{{ person.like_movies.all|length }}</b>개</span>
-
-      </button>
-    </h2>
-    <div id="collapseFour" class="accordion-collapse collapse container" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+      <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+        <button class="accordion-button collapsed alert-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            <span><b>{{ person.username }}</b>'s playlist</span>
+            <span class="badge mx-2"><b>{{ person.like_movies.all|length }}</b>개</span>
+        </button>
+      </h2>
+      <div id="collapseFour" class="accordion-collapse collapse container" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
       <div class="accordion-body row justify-content-center">
         {% for movie in like_posts %}
           <div class="col-12 col-sm-4 col-lg-2">
             <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
               <div class="card h-100">
                 <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
-                  <div class="badge bg-primary card-text">
-                    평점: {{ movie.weighted_vote|floatformat }}
-                  </div>
-              </div>
+                <div class="badge bg-primary card-text">
+                  평점: {{ movie.weighted_vote|floatformat }}
+                </div>
+              </div> 
             </a>
           </div>
         {% endfor %}
         
-        <div class="">
+        <div class="d-flex justify-content-center">
           {% if like_posts.has_previous %}
           {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
           <a href="?like_page={{ like_posts.previous_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
           {% endif %}
-          <span>{{ like_posts.number }}</span>
-          <span>/</span>
-          <span>{{ like_posts.paginator.num_pages }}</span>
+          <button type="button" class="btn btn-secondary">{{ like_posts.number }}/{{ like_posts.paginator.num_pages }}</button>
           {% if like_posts.has_next %}
           <a href="?like_page={{ like_posts.next_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">next</button></a>
           {% comment %} <a href="?page={{ like_posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
           {% endif %}
         </div>
-
       </div>
-    </div>
-    
+    </div> 
   </div>
 </div>
-
 
 {% endblock content %}
 
