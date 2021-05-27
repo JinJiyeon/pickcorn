@@ -10,63 +10,42 @@
 <br>
 <br>
 <br>
+<!--페이지 타이틀-->
 
-  <!--페이지 타이틀-->
-  
-  <h1>{{ person.username|title }}'s profile</h1>
+<h1>{{ person.username|title }}'s profile</h1>
 
-  <!--팔로우 언팔로우 버튼 구현-->
+<!--팔로우 언팔로우 버튼 구현-->
 
-  <!-- 자기가 자기는 팔로우 못함-->
-  {% if request.user != person %}
-    <form action="{% url 'accounts:follow' person.pk%}" method="POST">
-      {% csrf_token %}
-      <!--기존팔로워면 언팔가능-->
-      {% if request.user in person.followers.all %}
-      <button>Unfollow</button>
-      <!-- 아니면 팔로우가능-->
-      {% else %}
-      <button>Follow</button>
-      {% endif %}
-    </form>
-  {% endif %}
+<!-- 자기가 자기는 팔로우 못함-->
+{% if request.user != person %}
+  <form action="{% url 'accounts:follow' person.pk%}" method="POST">
+    {% csrf_token %}
+    <!--기존팔로워면 언팔가능-->
+    {% if request.user in person.followers.all %}
+    <button>Unfollow</button>
+    <!-- 아니면 팔로우가능-->
+    {% else %}
+    <button>Follow</button>
+    {% endif %}
+  </form>
+{% endif %}
 
-  <hr>
-  <br>
-  {% comment %} 팔로잉, 팔로워 숫자 {% endcomment %}
+<hr>
+<br>
+{% comment %} 팔로잉, 팔로워 숫자 {% endcomment %}
 
-  <h5>
-    <b>🍕 follower : </b>
-    <a href="{% url 'accounts:followers' person.pk %}">{{ person.followers.all|length }}</a>
-  </h5>
+<h5>
+  <b>🍕 follower : </b>
+  <a href="{% url 'accounts:followers' person.pk %}">{{ person.followers.all|length }}</a>
+</h5>
 
-  <h5>
-    <b>🍔 following : </b>
-    <a href="{% url 'accounts:followings' person.pk %}">{{ person.followings.all|length }}</a>
-  </h5>
+<h5>
+  <b>🍔 following : </b>
+  <a href="{% url 'accounts:followings' person.pk %}">{{ person.followings.all|length }}</a>
+</h5>
 
-  <br>
-  <hr>
-  {% comment %} 작성자의 팔로잉, 팔로워 숫자를 보여주고 유저의 이름을 모두 출력
-
-  <h5>followers</h5>
-  <ul>
-  {% for follower in person.followers.all %}
-  <li>{{ follower.username }}</li>
-  {% endfor %}
-  </ul>
-
-
-
-  <h5>followings</h5>
-  <ul>
-  {% for following in person.followings.all %}
-  <li>{{ following.username }}</li>
-  {% endfor %}
-  </ul>
-
-  <hr> {% endcomment %}
-
+<br>
+<hr>
 
 <div class="accordion" id="accordionExample">
   <!--   프로필의 유저가 작성한 모든 글의 제목 -->
@@ -113,7 +92,7 @@
     </div>
   </div>
 
-  <!-- 따봉한 영화 -->
+  <!-- 좋아요한 영화 -->
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingThree">
       <button class="accordion-button alert-info collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -138,15 +117,15 @@
         {% endfor %}
 
       </div>
+      {% comment %} pagination을 통해 일정 개수만 보여주고 다음 결과는 뒷 페이지로 보여줌 {% endcomment %}
       <div class="d-flex justify-content-center">
         {% if posts.has_previous %}
-        {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
         <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning m-3">previous</button></a>
+        {% comment %} query문에 다른 pagination의 정보도 같이 넣음으로서 다른 버튼을 눌러도 page 정보를 잃지 않게 함 {% endcomment %}
         {% endif %}
         <button type="button" class="btn btn-secondary m-3">{{ posts.number }}/{{ posts.paginator.num_pages }}</button>
         {% if posts.has_next %}
         <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning m-3">next</button></a>
-        {% comment %} <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
         {% endif %}
       </div>
     </div>
@@ -174,15 +153,15 @@
           </div>
         {% endfor %}
         
+        {% comment %} pagination을 통해 일정 개수만 보여주고 다음 결과는 뒷 페이지로 보여줌 {% endcomment %}
         <div class="d-flex justify-content-center">
           {% if like_posts.has_previous %}
-          {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
           <a href="?like_page={{ like_posts.previous_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning m-3">previous</button></a>
+          {% comment %} query문에 다른 pagination의 정보도 같이 넣음으로서 다른 버튼을 눌러도 page 정보를 잃지 않게 함 {% endcomment %}
           {% endif %}
           <button type="button" class="btn btn-secondary m-3">{{ like_posts.number }}/{{ like_posts.paginator.num_pages }}</button>
           {% if like_posts.has_next %}
           <a href="?like_page={{ like_posts.next_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning m-3">next</button></a>
-          {% comment %} <a href="?page={{ like_posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
           {% endif %}
         </div>
       </div>

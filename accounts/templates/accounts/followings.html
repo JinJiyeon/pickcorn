@@ -2,25 +2,28 @@
 
 
 {% block content %}
-
-<br>
-<br>
-<br>
 <br>
 <br>
 <br>
 
+{% comment %} following 명단 보여주기 {% endcomment %}
+<h1>{{ person.username|title }}의 followings</h1>
+<hr>
 
-
-  <h1>{{ person.username|title }}의 followings</h1>
-
+{% comment %} following하는 유저가 있다면 {% endcomment %}
+{% if following|length %}
   <ul>   
+    {% comment %} following하는 유저들의 프로필로 이동 {% endcomment %}
     {% for following in person.followings.all  %}
       <li>
         <a href="{% url 'accounts:profile' following.pk %}">{{ following.username|title }}</a>
       </li>
     {% endfor %}
   </ul>
+{% comment %} following가 없을 시 {% endcomment %}
+{% else %}
+  <p>아직 following이 없습니다.</p>
+{% endif %}
 
 
 {% endblock content %}

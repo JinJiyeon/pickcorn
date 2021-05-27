@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{% comment %} 검색 결과 창 {% endcomment %}
 <h1>Search Result</h1>
 
 <ul>
@@ -11,21 +12,20 @@
       <h3>- 🎬 Movies</h3>
       <br>
       <div class="row g-4">
+      {% comment %} 영화 리스트 나열 {% endcomment %}
         {% for movie in posts  %}
           <div class="col-4 col-md-2">
             <a href="{% url 'movies:detail' movie.pk %}" class="text-decoration-none">
               <div class="card h-100 border-0">
                 <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" class="card-img-top" alt="movie poster">
-                {% comment %} <div class="card-img-overlay">
-                  <h5 class="text-center"><span class="badge bg-secondary">{{ movie.title }}</span></h5>
-                </div> {% endcomment %}
               </div>
             </a>
           </div>
         {% endfor %}
         <br>
       </div>
-        <br>
+      <br>
+      {% comment %} 검색된 영화가 많을 시를 대비하여 pagination {% endcomment %}
       <div class="g-4 text-center">
         {% if posts.has_previous %}
         <a href="?page={{ posts.previous_page_number }}&user_page={{ user_posts.number }}&query={{search}}"><button type="button" class="btn btn-warning">previous</button></a>
@@ -39,6 +39,7 @@
         <br>
       </div>
     </div>
+  {% comment %} 검색된 영화가 없을 시 {% endcomment %}
   {% else %}
     <br>
     <h3>- 🎬 Movies</h3>
@@ -50,15 +51,17 @@
   <br>  
   <hr>
   
+  {% comment %} 유저 검색 결과 창 {% endcomment %}
   {% if users|length %}
     <div class="container">
       <br>
       <h3>- 🕴 Users</h3>
       <br>
       <div class="row g-4">
+      {% comment %} 받아온 유저 리스트 나열 {% endcomment %}
         {% for user in user_posts  %}
           <div class="col-4 col-md-2 card bg-dark">
-            <a href="{% url 'accounts:profile' user.pk %}" class="text-decoration-none text-center my-3">
+            <a href="{% url 'accounts:profile' user.pk %}" class="text-decoration-none text-center text-white my-3">
               <p>ID: {{ user.username }}</p>
               <p>팔로우: {{ user.followings.all|length }} / 팔로워: {{ user.followers.all|length }}</p>
               <span>( liked {{ user.like_movies.all|length }} movies )</span>
@@ -67,6 +70,8 @@
         {% endfor %}
       </div>
     </div>
+    <br>
+    {% comment %} 검색된 유저가 많을 시를 대비하여 pagination {% endcomment %}
     <div class="g-4 text-center">
       {% if user_posts.has_previous %}
       <a href="?user_page={{ user_posts.previous_page_number }}&page={{ posts.number }}&query={{search}}"><button type="button" class="btn btn-warning">previous</button></a>
@@ -79,6 +84,7 @@
       {% endif %}
       <br>
     </div>
+  {% comment %} 검색된 유저가 없을 시 {% endcomment %}
   {% else %}
     <br>
     <h3>- 🕴 Users</h3>
