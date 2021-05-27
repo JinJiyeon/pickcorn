@@ -1,19 +1,13 @@
-from django.core import serializers
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
-from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
-from .models import Movie, Article, Comment
-from .forms import ArticleForm, CommentForm
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse
-from django.contrib import messages
 from django.contrib.auth import get_user_model
-import random
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from accounts.models import User
-
+from .models import Movie, Article, Comment
+from .forms import ArticleForm, CommentForm
+import random
 
 
 @require_GET
@@ -145,6 +139,7 @@ def article_create(request, movie_pk):
 @require_http_methods(['GET', 'POST'])
 def article_update(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
+    print(article)
     movie = get_object_or_404(Movie, pk=article.movie_id)
     # 자기자신만 업데이트할 수 있다.
     if request.user == article.user:
