@@ -391,7 +391,8 @@
 ## 06. 추천 알고리즘 상세 설명
 db & recommend.ipynb 참조
 
-<img src="README.assets/추천알고리즘.png" alt="추천알고리즘" style="zoom:80%;" />
+![추천알고리즘](README.assets/추천알고리즘.png)
+
 
 api를  활용하여 tmdb에서 5000개의 데이터를 불러오고, 이 중에 poster_path가 null값이 아닌 데이터를 저장한다. 
 
