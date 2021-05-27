@@ -66,9 +66,9 @@
                 <div class="col-10">
                   <h5 class="card-title">
                     {% comment %} 댓글 작성자의 해당 영화 평가에 따른 emoji {% endcomment %}
-                    {% if article.user in movie.rated_good_users.all %}
+                    {% if comment.user in movie.rated_good_users.all %}
                       😆
-                    {% elif article.user in movie.rated_bad_users.all %}
+                    {% elif comment.user in movie.rated_bad_users.all %}
                       🤔
                     {% else %}
                       🥚
