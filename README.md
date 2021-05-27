@@ -8,7 +8,9 @@
 
 ## 배포 서버 URL
 
-✨ http://18.116.36.57
+✨ http://18.116.36.57 
+classic - ec2라 매번 변경됨
+![주소](./README.assets/주소.png)
 
 
 
