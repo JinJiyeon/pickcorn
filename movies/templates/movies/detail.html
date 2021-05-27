@@ -47,10 +47,10 @@
           <div class="btn-group d-flex justify-content-center" role="group">
             <form action="{% url 'movies:rate_bad' movie.id %}" method="POST">
               {% csrf_token %}
-              {% if request.user in movie.like_users.all %}
-                <button class="btn btn-success d-block like-btn">added to your list 😉</button>
+              {% if request.user in movie.rated_bad_users.all %}
+                <button class="btn btn-outline-primary"><span style="color: DodgerBlue;"><i class="fas fa-thumbs-down"></i></span></button>
               {% else %}
-                <button class="btn btn-secondary d-block like-btn">add to my list 📋</button>
+                <button class="btn btn-outline-primary"><i class="far fa-thumbs-down"></i></button>
               {% endif %}
             </form> 
             <form action="{% url 'movies:rate_good' movie.id %}" method="POST">
