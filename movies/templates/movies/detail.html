@@ -175,11 +175,11 @@
       },
     })
     .then( function ( response ) {
+      console.log(response.data)
       const { liked } = response.data
-      console.log(liked) 
       const likeBtn = document.querySelector('.like-btn')
 
-      likeBtn.className += liked? ' btn-success' : 'btn-secondary'
+      likeBtn.className += liked? ' btn-success' : ' btn-secondary'
       likeBtn.innerText = liked? 'added to your list 😉' : 'add to my list 📋'
 
     })
