@@ -30,7 +30,8 @@
 
 * 영화를 골라서 추천해준다는 뜻의 `Pick` 과 영화 필수템 `Popcorn` 을 합쳐서 만들었습니다.
 
-  <img src="C:\Users\zoo21\AppData\Roaming\Typora\typora-user-images\image-20210527154223363.png" alt="image-20210527154223363" style="zoom:50%;" /> <img src="C:\Users\zoo21\AppData\Roaming\Typora\typora-user-images\image-20210527154354294.png" alt="image-20210527154354294" style="zoom:67%;" />
+
+<img src="README.assets/캡처.PNG" alt="1" style="zoom:80%;" />
 
 
 
@@ -62,7 +63,7 @@
 
 
 
-![image-20210527155029483](C:\Users\zoo21\AppData\Roaming\Typora\typora-user-images\image-20210527155029483.png)
+![image-20210527181356220](README.assets/image-20210527181356220.png)
 
 
 
@@ -76,9 +77,9 @@
 
 ## 02. 목표
 
-![image-20210527154937340](C:\Users\zoo21\AppData\Roaming\Typora\typora-user-images\image-20210527154937340.png)
+![image-20210527181425105](README.assets/image-20210527181425105.png)
 
-![image-20210527155346359](C:\Users\zoo21\AppData\Roaming\Typora\typora-user-images\image-20210527155346359.png)
+![image-20210527181540540](README.assets/image-20210527181540540.png)
 
 
 
@@ -91,8 +92,6 @@
 
 
 ## 03. 프로젝트 구조
-
-* 🧔 파일 이름 세세하게 적어야하나...?
 
 | pickcorn/                                                    | accounts/                                                    | movies/                                                      |
 | ------------------------------------------------------------ | :----------------------------------------------------------- | ------------------------------------------------------------ |
