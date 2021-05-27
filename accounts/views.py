@@ -71,7 +71,7 @@ def profile(request, user_pk):
     page = request.GET.get('page')
     posts = paginator.get_page(page)
     
-    like_paginator = Paginator(like_movies, 3)
+    like_paginator = Paginator(like_movies, 12)
     like_page = request.GET.get('page')
     like_posts = like_paginator.get_page(like_page)    
 
@@ -79,6 +79,7 @@ def profile(request, user_pk):
         'person': person,
         'posts': posts,
         'like_posts': like_posts,
+        'page':like_page
     }
     return render(request, 'accounts/profile.html', context)
 
