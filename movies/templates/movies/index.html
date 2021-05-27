@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'index.css' %}">
+{% endblock %}
 
+{% block content %}
 {% if request.user.is_authenticated %}
     {% if playlist %}
       <h2 class="mb-3">You like 🎯</h2>
