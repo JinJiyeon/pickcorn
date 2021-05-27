@@ -6,12 +6,12 @@
 <br>
 <br>
 <br>
-  <div class="d-flex justify-content-center align-items-center">
-    <form action="{% url 'movies:searchpage' %}">
-      <input type="text" name="query" placeholder="Search here..!">
-      <button type="submit" class="btn alert-info mx-2">🔎</button>
-    </form>
-  
+{% comment %} 영화, 유저 정보 검색창 {% endcomment %}
+<div class="d-flex justify-content-center align-items-center">
+  <form action="{% url 'movies:searchpage' %}">
+    <input type="text" name="query" placeholder="Search here..!">
+    <button type="submit" class="btn alert-info mx-2">🔎</button>
+  </form>
 </div>
 
 

@@ -1,118 +1,71 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  
-  {% comment %} <style>
-  body {
-    background-image: url("https://image.tmdb.org/t/p/original/{{ movie.poster_path }}");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-  }
-  </style> {% endcomment %}
 
-  <div class="text-light mt-4">
-    <div class="card text-center bg-transparent border-warning">
-      <div class="card-header py-5">
-        <h2 class="text-center">👑 {{ movie.title }} 👑</h2>
-        <h4 class="text-center">{{ article.title }}</h4>
+{% comment %} 리뷰 글 화면 {% endcomment %}
+<div class="text-light mt-4">
+  <div class="card text-center bg-transparent border-warning">
+    {% comment %} 리뷰 제목 및 헤더 {% endcomment %}
+    <div class="card-header py-5">
+      <h2 class="text-center">👑 {{ movie.title }} 👑</h2>
+      <h4 class="text-center">{{ article.title }}</h4>
+    </div>
+    <hr>
+    {% comment %} 리뷰 내용 {% endcomment %}
+    <div class="card-body container px-4">
+      <div class="row align-items-center justify-content-end">
+        <div class="col text-center">
+          
+          {% comment %} 해당 영화 리뷰 작성자의 평가에 따라 emoji 바꾸기 {% endcomment %}
+          {% if article.user in movie.rated_good_users.all %}
+            <h2> 😆</h2>
+          {% elif article.user in movie.rated_bad_users.all %}
+            <h2> 🤔</h2>
+          {% else %}
+            <h2> 🥚</h2>
+          {% endif %}
+          {% comment %} 리뷰 작성 정보 {% endcomment %}
+          <p>작성자: <a href="{% url 'accounts:profile' article.user.pk %}" class="text-decoration-none"> {{ article.user }} </a></p>
+          <p>작성 시각: {{ article.created_at|date:"Y.m.d (D) P" }}</p>
+          <p>수정 시각: {{ article.updated_at }}</p>
+        </div>
+        {% comment %} 리뷰 내용 {% endcomment %}
+        <div class="col-8 text-center">
+          <h3 class="alert-info">내용</h3> 
+          <br>
+          <p>{{ article.content }}</p>
+          <hr>
+          {% comment %} 작성자일 시 수정 및 삭제 버튼 표시 {% endcomment %}
+          {% if request.user == article.user  %}
+          <div class="btn-group" role="group">
+            <form class="mx-4" action="{% url 'movies:article_update' article.pk %}">
+              <button class="btn btn-success">수정하기</button>
+            </form>
+            <br>
+            <form class="mx-4" action="{% url 'movies:article_delete' article.pk %}" method="POST">
+              {% csrf_token %}
+              <button class="btn btn-danger">삭제하기</button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
       </div>
       <hr>
-      <div class="card-body container px-4">
-        <div class="row align-items-center justify-content-end">
-          <div class="col text-center">
-            
-            {% if article.user in movie.rated_good_users.all %}
-              <h2> 😆</h2>
-            {% elif article.user in movie.rated_bad_users.all %}
-              <h2> 🤔</h2>
-            {% else %}
-              <h2> 🥚</h2>
-            {% endif %}
-            <p>작성자: <a href="{% url 'accounts:profile' article.user.pk %}" class="text-decoration-none"> {{ article.user }} </a></p>
-            <p>작성 시각: {{ article.created_at|date:"Y.m.d (D) P" }}</p>
-            <p>수정 시각: {{ article.updated_at }}</p>
-          </div>
-          <div class="col-8 text-center">
-            <h3 class="alert-info">내용</h3> 
-            <br>
-            <p>{{ article.content }}</p>
-            <hr>
-            {% if request.user == article.user  %}
-            <div class="btn-group" role="group">
-              <form class="mx-4" action="{% url 'movies:article_update' article.pk %}">
-                <button class="btn btn-success">수정하기</button>
-              </form>
-              <br>
-              <form class="mx-4" action="{% url 'movies:article_delete' article.pk %}" method="POST">
-                {% csrf_token %}
-                <button class="btn btn-danger">삭제하기</button>
-              </form>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-        <hr>
-        <div class="comments">
-          <h4>댓글 목록</h4>
-          {% if comments|length %}
-            <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
-          {% endif %}
+      {% comment %} 댓글 section {% endcomment %}
+      <div class="comments">
+        <h4>댓글 목록</h4>
+        {% if comments|length %}
+          <p><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
+        {% endif %}
 
-          <div class="container">
-            {% for comment in posts %}
-              <div class="card w-75 container bg-dark border-dark my-2">
-                <div class="card-body row d-flex justify-content-between align-items-center">
-                  <div class="col-10">
-                    <h5 class="card-title">
-                      {% if article.user in movie.rated_good_users.all %}
-                        😆
-                      {% elif article.user in movie.rated_bad_users.all %}
-                        🤔
-                      {% else %}
-                        🥚
-                      {% endif %}
-                      <a href="{% url 'accounts:profile' comment.user.pk %}" class="text-decoration-none">{{ comment.user }}</a> 📣 {{ comment.content }}
-                    </h5>
-                    <span>({{ comment.created_at|timesince }} 전)</span>
-                  </div>
-                  <div class="col-2">
-                    {% if request.user == comment.user  %}
-                    <span class="card-body text-end">
-                      <form action="{% url 'movies:delete_comment' comment.pk %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-primary">삭제</button>
-                      </form>
-                    </span>
-                    {% endif %}
-                  </div>
-                </div>     
-              </div>
-            {% empty %}
-              <p><b>아직 댓글이 없어요..😥</b></p>
-            {% endfor %}
-          
-            <br>
-            <div class="">
-              {% if posts.has_previous %}
-              <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
-              <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
-              {% endif %}
-              <span>{{ posts.number }}</span>
-              <span>/</span>
-              <span>{{ posts.paginator.num_pages }}</span>
-              {% if posts.has_next %}
-              <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
-              <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
-              {% endif %}
-            </div>
-          </div>
-
-          {% comment %} {% for comment in comments %}
-            <div class="card w-75 container bg-dark border-dark">
+        <div class="container">
+          {% for comment in posts %}
+            {% comment %} 개별 댓글 styling {% endcomment %}
+            <div class="card w-75 container bg-dark border-dark my-2">
               <div class="card-body row d-flex justify-content-between align-items-center">
                 <div class="col-10">
                   <h5 class="card-title">
+                    {% comment %} 댓글 작성자의 해당 영화 평가에 따른 emoji {% endcomment %}
                     {% if article.user in movie.rated_good_users.all %}
                       😆
                     {% elif article.user in movie.rated_bad_users.all %}
@@ -125,6 +78,7 @@
                   <span>({{ comment.created_at|timesince }} 전)</span>
                 </div>
                 <div class="col-2">
+                  {% comment %} 댓글 작성자일 시 삭제 버튼 표시 {% endcomment %}
                   {% if request.user == comment.user  %}
                   <span class="card-body text-end">
                     <form action="{% url 'movies:delete_comment' comment.pk %}" method="POST">
@@ -135,30 +89,52 @@
                   {% endif %}
                 </div>
               </div>     
-            </div> {% endcomment %}
-            <br>
-
-          <hr>
-          {% if request.user.is_authenticated %}
-            <form action="{% url 'movies:create_comment' article.pk %}" method="POST">
-              {% csrf_token %}
-              <p><h4>댓글 작성하기</h4></p>
-              {{ request.user }}: {{ comment_form.content }}
-              <button class="btn btn-outline-info">등록</button>
-            </form>
-          {% else %}
-            <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
-          {% endif %}
+            </div>
+          {% empty %}
+            <p><b>아직 댓글이 없어요..😥</b></p>
+          {% endfor %}
+        
           <br>
-          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-lg alert-info">Back</a>
-          <br>
+          {% comment %} 댓글이 많을 시를 대비한 pagination {% endcomment %}
+          <div class="">
+            {% if posts.has_previous %}
+            <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a>
+            <a href="?page={{ posts.previous_page_number }}"><button type="button" class="btn btn-warning">previous</button></a>
+            {% endif %}
+            <span>{{ posts.number }}</span>
+            <span>/</span>
+            <span>{{ posts.paginator.num_pages }}</span>
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}"><button type="button" class="btn btn-warning">next</button></a>
+            <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a>
+            {% endif %}
+          </div>
         </div>
-      </div>
-      <div class="card-footer text-muted">
-        {{ article.created_at|timesince }} 전에 등록됨
+
+        <br>
+
+        <hr>
+        {% comment %} 댓글 작성 section {% endcomment %}
+        {% if request.user.is_authenticated %}
+          <form action="{% url 'movies:create_comment' article.pk %}" method="POST">
+            {% csrf_token %}
+            <p><h4>댓글 작성하기</h4></p>
+            {{ request.user }}: {{ comment_form.content }}
+            <button class="btn btn-outline-info">등록</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
+        {% endif %}
+        <br>
+        <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-lg alert-info">Back</a>
+        <br>
       </div>
     </div>
+    <div class="card-footer text-muted">
+      {{ article.created_at|timesince }} 전에 등록됨
+    </div>
   </div>
+</div>
   
   
 {% endblock  %}

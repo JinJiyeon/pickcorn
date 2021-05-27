@@ -6,18 +6,11 @@
 {% endblock %}
 
 {% block content %}
-  
-  {% comment %} <style>
-  body {
-    background-image: url("https://image.tmdb.org/t/p/original/{{ movie.poster_path }}");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-  }
-  </style> {% endcomment %}
-  
+
+{% comment %} form을 꾸밀 패키지 load {% endcomment %}
 {% load crispy_forms_tags %}
 
+{% comment %} article 수정 form {% endcomment %}
 <div class="text-light mt-4">
   <div class="card bg-transparent border-warning">
     <div class="card-header card text-center m-3">

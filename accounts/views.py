@@ -74,12 +74,14 @@ def logout(request):
     return redirect('movies:index')
 
 
+# 개인 프로필
 @require_GET
 def profile(request, user_pk):
     person = get_object_or_404(get_user_model(), pk=user_pk)
     rated_good_movies = person.rated_good_movies.all()
     like_movies = person.like_movies.all()
 
+    # paginator를 통해 6개씩 페이지를 나눠서 받아옴
     paginator = Paginator(rated_good_movies, 6)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -97,6 +99,7 @@ def profile(request, user_pk):
     return render(request, 'accounts/profile.html', context)
 
 
+# 타 유저 follow 기능
 @require_POST
 def follow(request, user_pk):
     if request.user.is_authenticated:
@@ -111,6 +114,7 @@ def follow(request, user_pk):
         return redirect('accounts:login')
 
 
+# 유저의 following 명단
 def followings(request, user_pk):
     person = get_object_or_404(get_user_model(), pk=user_pk)
     context = {
@@ -118,6 +122,8 @@ def followings(request, user_pk):
     }
     return render(request, 'accounts/followings.html', context)
 
+
+# 유저의 follower 명단
 def followers(request, user_pk):
     person = get_object_or_404(get_user_model(), pk=user_pk)
     context = {

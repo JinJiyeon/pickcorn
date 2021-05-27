@@ -84,11 +84,13 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 
+# 영화 세부 정보
 @require_GET
 def detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     articles = movie.article_set.all()
     
+    # 유저 평가 점수
     movie_good = movie.rated_good_users.count()
     moive_bad = movie.rated_bad_users.count()
     if movie_good or moive_bad:
@@ -97,6 +99,7 @@ def detail(request, movie_pk):
         movie_score = 0
     movie_votes = movie_good + moive_bad
     
+    # 관련 article paginator
     paginator = Paginator(articles, 3)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -175,6 +178,7 @@ def article_delete(request, article_pk):
     return redirect('movies:detail', movie.pk)
 
 
+# article 세부 정보
 @require_GET
 def article_detail(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
@@ -182,6 +186,7 @@ def article_detail(request, article_pk):
     comments = article.comment_set.all()
     comment_form = CommentForm()
 
+    # 댓글 paginator
     paginator = Paginator(comments, 5)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
@@ -196,6 +201,7 @@ def article_detail(request, article_pk):
     return render(request, 'movies/article_detail.html', context)
 
 
+# 댓글 작성
 @require_POST
 def create_comment(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
@@ -217,6 +223,7 @@ def create_comment(request, article_pk):
     return redirect('movies:article_detail', article.pk)
 
 
+# 댓글 삭제
 @require_POST
 def delete_comment(request, comment_pk):
     comment = get_object_or_404(Comment, pk=comment_pk)
@@ -251,6 +258,7 @@ def like(request, movie_pk):
     return HttpResponse(status=401)
 
 
+# good 평가
 @login_required
 @require_http_methods(['GET', 'POST'])
 def rate_good(request, movie_pk):
@@ -264,22 +272,16 @@ def rate_good(request, movie_pk):
     # 좋아요를 키면 싫어요를 꺼준다
     if movie.rated_good_users.filter(pk=user.pk).exists():
         movie.rated_good_users.remove(user)
-        rated_good=False
     else:
         movie.rated_good_users.add(user)
-        rated_good=True
         if movie.rated_bad_users.filter(pk=user.pk).exists():
             movie.rated_bad_users.remove(user)
-            rated_bad=False
-    # 삭제해도 무방
-    response_data = {
-        'rated_good': rated_good,
-        'rated_good_count': movie.rated_good_users.count()
-    }
+
 
     return redirect('movies:detail', movie.pk)
 
 
+# bad 평가
 @login_required
 @require_http_methods(['GET', 'POST'])
 def rate_bad(request, movie_pk):
@@ -292,37 +294,33 @@ def rate_bad(request, movie_pk):
 
     if movie.rated_bad_users.filter(pk=user.pk).exists():
         movie.rated_bad_users.remove(user)
-        rated_bad=False
     else:
         movie.rated_bad_users.add(user)
-        rated_bad=True
         if movie.rated_good_users.filter(pk=user.pk).exists():
             movie.rated_good_users.remove(user)
-            rated_good=False
-    # 삭제해도 무방
-    response_data = {
-        'rated_bad': rated_bad,
-        'rated_bad_count': movie.rated_bad_users.count()
-    }
     
     return redirect('movies:detail', movie.pk)
 
 
+# 검색창 page
 @require_GET
 def homepage(request):
     return render(request, 'movies/homepage.html')
 
 
+# 검색 결과 page
 @require_GET
 def searchpage(request):
     search = request.GET['query']
     movies = Movie.objects.filter(title__icontains=search).order_by('-weighted_vote')
     users = User.objects.filter(username__icontains=search)
 
+    # movie 검색 결과가 많을 시 paginate
     paginator = Paginator(movies, 30)
     page = request.GET.get('page')
     posts = paginator.get_page(page)
 
+    # user 검색 결과가 많을 시 paginate
     user_paginator = Paginator(users, 30)
     user_page = request.GET.get('user_page')
     user_posts = user_paginator.get_page(user_page)
