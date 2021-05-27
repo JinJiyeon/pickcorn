@@ -81,8 +81,8 @@
       <div class="accordion-body">
         <li>
         {% for article in person.article_set.all %}
-          <a class="text-decoration-none" href="{% url 'movies:article_detail' article.pk %}">
-            <p>{{ article.title }}</p>
+          <a class="text-decoration-none text-dark" href="{% url 'movies:article_detail' article.pk %}">
+            <p>{{ article.title }} ({{ article.movie.title }})</p>
           </a>
         {% endfor %}
         </li>
@@ -102,8 +102,8 @@
       <div class="accordion-body">
         <li>
         {% for comment in person.comment_set.all %}
-          <a class="text-decoration-none" href="{% url 'movies:article_detail' comment.article.pk %}">
-            <p>{{ comment.content }}</p>
+          <a class="text-decoration-none text-dark" href="{% url 'movies:article_detail' comment.article.pk %}">
+            <p>{{ comment.content }} (글 제목: {{ comment.article.title }} / 영화: {{ comment.article.movie.title }})</p>
           </a>
         {% endfor %}
         </li>
@@ -136,14 +136,12 @@
         {% endfor %}
 
       </div>
-      <div class="">
+      <div class="d-flex justify-content-center">
         {% if posts.has_previous %}
         {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
         <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
         {% endif %}
-        <span>{{ posts.number }}</span>
-        <span>/</span>
-        <span>{{ posts.paginator.num_pages }}</span>
+        <button type="button" class="btn btn-secondary">{{ posts.number }}/{{ posts.paginator.num_pages }}</button>
         {% if posts.has_next %}
         <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning">next</button></a>
         {% comment %} <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
