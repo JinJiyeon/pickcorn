@@ -178,7 +178,7 @@
       console.log(response.data)
       const { liked } = response.data
       const likeBtn = document.querySelector('.like-btn')
-
+      likeBtn.classList.remove('btn-secondary', 'btn-success')
       likeBtn.className += liked? ' btn-success' : ' btn-secondary'
       likeBtn.innerText = liked? 'added to your list 😉' : 'add to my list 📋'
 
