@@ -53,17 +53,13 @@
 
 	* 영화 추천 알고리즘 구현
 	* movies 앱 > index 구현
-	* 관리자뷰 생성
 	* ajax / 배포
-
-
 
 🍍 심해영
 
 * accounts 앱 > 회원가입 / 로그인 / 로그아웃 구현
 * navbar / font / css / 기타 레이아웃 구현
 * review 생성, 수정, 디테일,  mypage 레이아웃 구현
-
 
 
 🥑 육승준
@@ -205,7 +201,7 @@
 
 * navbar : pickcorn 로고, sign in, login
 * 상단에 회원가입을 유도하는 메세지
-* 영화 추천 서비스를 받을 수 없음
+* 로그인 하기 전엔 영화 추천 서비스를 받을 수 없음
 
 
 
@@ -248,7 +244,7 @@
 
    
 
-* 메인 화면에서 follow 한 유저의 영화 목록이 뜸
+* 메인 화면에서 follow 한 유저의 영화 목록과 이를 기반으로 한 추천목록이 뜸
 
   <img src="README.assets/image-20210527172005438.png" alt="image-20210527172005438" style="zoom:67%;" />
 
@@ -393,8 +389,13 @@
 
 
 ## 06. 추천 알고리즘 상세 설명
+db & recommend.ipynb 참조
 
-#### 🌵 영화 정보를 벡터로 만들기
+<img src="README.assets/추천알고리즘.png" alt="추천알고리즘" style="zoom:80%;" />
+
+api를  활용하여 tmdb에서 5000개의 데이터를 불러오고, 이 중에 poster_path가 null값이 아닌 데이터를 저장한다. 
+
+#### 🌵 장르를 기준으로 영화 정보를 벡터로 만들기
 
 ```
 movies_df['genres_literal'] = movies_df['genres'].apply(lambda x : (' ').join(map(str, x)))
@@ -404,13 +405,16 @@ genre_mat = count_vect.fit_transform(movies_df['genres_literal'])
 
 
 
-#### 🌵 벡터 간 유사도 구하기
+#### 🌵 코사인 각도를 기준으로 벡터 간 유사도 구하기
 
 ```
 genre_sim = cosine_similarity(genre_mat, genre_mat)
 genre_sim_sorted_ind = genre_sim.argsort()[:, ::-1]
 ```
 
+영화 별로 유사도 순으로 6개 영화를 추출하고, 이 중 가중평균이 높은 3개를 추출한다. 가중평균은 평균 평점에 투표수를 가중치로 둔 점수이다.
+
+영화별 추천 영화 테이블을 기존의 영화정보 테이블에 merge한 후, M:N 관계로 DB에 저장한다.
 
 
 
