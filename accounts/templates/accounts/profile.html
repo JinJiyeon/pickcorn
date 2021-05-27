@@ -80,11 +80,11 @@
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <li>
-          {% for article in person.article_set.all %}
-            <a class="text-decoration-none" href="{% url 'movies:article_detail' article.pk %}">
-              <p>{{ article.title }}</p>
-            </a>
-          {% endfor %}
+        {% for article in person.article_set.all %}
+          <a class="text-decoration-none" href="{% url 'movies:article_detail' article.pk %}">
+            <p>{{ article.title }}</p>
+          </a>
+        {% endfor %}
         </li>
       </div>
     </div>
@@ -102,7 +102,7 @@
       <div class="accordion-body">
         <li>
         {% for comment in person.comment_set.all %}
-          <a href="{% url 'movies:article_detail' comment.article.pk %}">
+          <a class="text-decoration-none" href="{% url 'movies:article_detail' comment.article.pk %}">
             <p>{{ comment.content }}</p>
           </a>
         {% endfor %}
