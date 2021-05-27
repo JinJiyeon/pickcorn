@@ -175,8 +175,8 @@
       },
     })
     .then( function ( response ) {
-      const { liked, count } = response.data
-      // console.log(liked, count)
+      const { liked } = response.data
+      console.log(liked) 
       const likeBtn = document.querySelector('.like-btn')
 
       likeBtn.className += liked? ' btn-success' : 'btn-secondary'
