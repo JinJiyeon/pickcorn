@@ -23,11 +23,10 @@
             <p class="card-text">tmdb vote : {{ movie.weighted_vote|floatformat }}</p>
             <form action="{% url 'movies:like' movie.id %}" method="POST" class="d-inline" id="like-form" data-movie-id="{{ movie.pk }}">
               {% csrf_token %}
-              <button class="btn btn-outline-primary">
               {% if request.user in movie.like_users.all %}
-                <span style="color: Tomato;" class="like-color"><i class="fas fa-heart heart like-fill"></i></span>
+                <button class="btn btn-success d-block">added to your list 😉</button>
               {% else %}
-                <span class="like-color"><i class="far fa-heart heart like-fill"></i></span>
+                <button class="btn btn-outline-light btn-transparent text-white d-block">add to my list 📋</button>
               {% endif %}
               </button>
             </form>

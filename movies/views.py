@@ -199,19 +199,22 @@ def article_detail(request, article_pk):
 @require_POST
 def create_comment(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
-    comment_form = CommentForm(request.POST)
-    if comment_form.is_valid():
-        comment = comment_form.save(commit=False)
-        comment.article = article
-        comment.user = request.user
-        comment.save()
-        return redirect('movies:article_detail', article.pk)
-    context = {
-        'comment_form': comment_form,
-        'article': article,
-        'comments': article.comment_set.all(),
-    }
-    return render(request, 'movies/detail.html', context)
+    if request.user.is_authenticated:
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.article = article
+            comment.user = request.user
+            comment.save()
+            return redirect('movies:article_detail', article.pk)
+        context = {
+            'comment_form': comment_form,
+            'article': article,
+            'comments': article.comment_set.all(),
+        }
+        return render(request, 'movies/detail.html', context)
+    
+    return redirect('movies:article_detail', article.pk)
 
 
 @require_POST
@@ -305,11 +308,12 @@ def rate_bad(request, movie_pk):
     return redirect('movies:detail', movie.pk)
 
 
-
+@require_GET
 def homepage(request):
     return render(request, 'movies/homepage.html')
 
 
+@require_GET
 def searchpage(request):
     search = request.GET['query']
     movies = Movie.objects.filter(title__icontains=search).order_by('-weighted_vote')
