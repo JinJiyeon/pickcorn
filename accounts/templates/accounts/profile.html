@@ -75,6 +75,7 @@
       <button class="accordion-button alert-info collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
         <span><b>{{ person.username }}</b> 님이 작성한 리뷰</span>
         <span class="badge mx-2"><b>{{ person.article_set.all|length }}</b>개</span>
+        {% comment %} 👉 badge를 사용해서 개수가 눈에 잘 보이게 표현 {% endcomment %}
       </button>
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -82,6 +83,7 @@
         <li>
         {% for article in person.article_set.all %}
           <a class="text-decoration-none" href="{% url 'movies:article_detail' article.pk %}">
+          {% comment %} 👉 text-decoration-none : a태그 사용 시 추가되는 밑줄 제거 {% endcomment %}
             <p>{{ article.title }}</p>
           </a>
         {% endfor %}
@@ -136,16 +138,16 @@
         {% endfor %}
 
       </div>
-      <div class="">
+      <div class="d-flex justify-content-center">
         {% if posts.has_previous %}
         {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
-        <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
+        <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning mb-4">previous</button></a>
         {% endif %}
         <span>{{ posts.number }}</span>
         <span>/</span>
         <span>{{ posts.paginator.num_pages }}</span>
         {% if posts.has_next %}
-        <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning">next</button></a>
+        <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning mb-4">next</button></a>
         {% comment %} <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
         {% endif %}
       </div>
@@ -179,9 +181,9 @@
           {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
           <a href="?like_page={{ like_posts.previous_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
           {% endif %}
-          <button type="button" class="btn btn-secondary">{{ like_posts.number }}/{{ like_posts.paginator.num_pages }}</button>
+          <button type="button" class="btn btn-secondary m-3">{{ like_posts.number }}/{{ like_posts.paginator.num_pages }}</button>
           {% if like_posts.has_next %}
-          <a href="?like_page={{ like_posts.next_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">next</button></a>
+          <a href="?like_page={{ like_posts.next_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning m-3">next</button></a>
           {% comment %} <a href="?page={{ like_posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
           {% endif %}
         </div>
