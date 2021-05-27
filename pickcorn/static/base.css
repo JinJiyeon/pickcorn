@@ -37,7 +37,7 @@ body {
   background: #000000;
   /* background-color: #fff; */
   color: white;
-  font-family: 'Lobster', cursive;
+  font-family: 'Lobster', 'Noto Sans KR', cursive;
 }
 
 .navbar-collapse{

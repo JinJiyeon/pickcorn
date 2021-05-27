@@ -14,7 +14,7 @@
   <div class="text-light mt-4">
     <div class="card text-center bg-transparent border-warning">
       <div class="card-header py-5">
-        <h2 class="text-center">{{ movie.title }}</h2>
+        <h2 class="text-center">👑 {{ movie.title }} 👑</h2>
         <h4 class="text-center">{{ article.title }}</h4>
       </div>
       <hr>
@@ -41,11 +41,10 @@
             {% if request.user == article.user  %}
             <div class="btn-group" role="group">
               <form class="mx-4" action="{% url 'movies:article_update' article.pk %}">
-                {% csrf_token %}
                 <button class="btn btn-success">수정하기</button>
               </form>
               <br>
-              <form class="mx-4" action="{% url 'movies:article_delete' article.pk %}">
+              <form class="mx-4" action="{% url 'movies:article_delete' article.pk %}" method="POST">
                 {% csrf_token %}
                 <button class="btn btn-danger">삭제하기</button>
               </form>
