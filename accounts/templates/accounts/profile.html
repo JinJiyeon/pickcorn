@@ -141,11 +141,11 @@
       <div class="d-flex justify-content-center">
         {% if posts.has_previous %}
         {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
-        <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning mb-4">previous</button></a>
+        <a href="?page={{ posts.previous_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning m-3">previous</button></a>
         {% endif %}
-        <button type="button" class="btn btn-secondary">{{ posts.number }}/{{ posts.paginator.num_pages }}</button>
+        <button type="button" class="btn btn-secondary m-3">{{ posts.number }}/{{ posts.paginator.num_pages }}</button>
         {% if posts.has_next %}
-        <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning mb-4">next</button></a>
+        <a href="?page={{ posts.next_page_number }}&like_page={{ like_posts.number }}"><button type="button" class="btn btn-warning m-3">next</button></a>
         {% comment %} <a href="?page={{ posts.paginator.num_pages }}"><button type="button" class="btn btn-warning">last</button></a> {% endcomment %}
         {% endif %}
       </div>
@@ -177,7 +177,7 @@
         <div class="d-flex justify-content-center">
           {% if like_posts.has_previous %}
           {% comment %} <a href="?page=1"><button type="button" class="btn btn-warning">first</button></a> {% endcomment %}
-          <a href="?like_page={{ like_posts.previous_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning">previous</button></a>
+          <a href="?like_page={{ like_posts.previous_page_number }}&page={{ posts.number }}"><button type="button" class="btn btn-warning m-3">previous</button></a>
           {% endif %}
           <button type="button" class="btn btn-secondary m-3">{{ like_posts.number }}/{{ like_posts.paginator.num_pages }}</button>
           {% if like_posts.has_next %}
