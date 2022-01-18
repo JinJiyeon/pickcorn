@@ -2,21 +2,11 @@
 
 ### SSAFY 우수 프로젝트 선정
 
-👼 팀장 : 진지연
-
-👶 팀원 : 심해영, 육승준
-
-
-
-
-
 ## 01. 목적
 
 자체적인 추천 알고리즘을 구현하고
 
 기본기능을 완비한 서비스를 개발하자
-
-
 
 
 
@@ -32,24 +22,25 @@
 
 🍍 심해영
 
+```
 * accounts 앱 > 회원가입 / 로그인 / 로그아웃 구현
 * navbar / font / css / 기타 레이아웃 구현
 * review 생성, 수정, 디테일,  mypage 레이아웃 구현
-
+```
 
 🥑 육승준
 
+```
 * movies 앱 > detail / community 구현
 * accounts 앱 > profile / followers / followings 구현
 * 영화 제목 & user id 검색 기능 구현
+```
 
 ![팀룰](README.assets/팀룰.png)
 
 
 
-
-
-## 03. 데이터베이스 모델링(ERD)
+## 03. ERD
 
 ![ERD](README.assets/ERD.png)
 
@@ -83,7 +74,11 @@ genre_sim_sorted_ind = genre_sim.argsort()[:, ::-1]
 
 ![추천알고리즘](README.assets/추천기능.png)
 
+#### 🌵 개선 방안
 
+이 프로젝트는 속성이 유사한 item을 추천해주었다. 여기서 나아가 나와 취향이 비슷한 사람이 좋아하는 영화를 추천해주면 좋을 것 같다. 이 때 문제점은 유저는 드물게 평점을 매긴다는 점인데, 유저 로그를 평점으로 변환하면 문제를 해결할 수 있을 것으로 보인다.
+
+[자세히 보기](https://github.com/JinJiyeon/dataScience/tree/master/93_Recommendation)
 
 
 
